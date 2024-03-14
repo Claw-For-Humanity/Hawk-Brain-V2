@@ -6,4 +6,3 @@ data/.DS_Store
 /detector/models
 /detector/__pycache__
 /detector/taco_config
-/detector/taco_config
