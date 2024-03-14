@@ -5,19 +5,34 @@ import string
 import os
 
 class capture:
-
-    def init(camPort):
+    
+    # saving directory
+    SAVING_DIR = None
+    
+    def init(camPort, base):
         camera = cv2.VideoCapture(camPort)
         if not camera.isOpened():
             raise('camera initialization failed. Check camera port')
+
+        if not os.path.exists(os.path.join(base, 'capturedImages')):
+            os.mkdir(os.path.join(base, 'capturedImages'))
+        
+        capture.SAVING_DIR = os.path.join(base, 'capturedImages')
         
         return camera
+    
+    def frame(frame):
+        '''saves picture in png format to default directory'''
+        characters = string.ascii_letters + string.digits
+        random_string = ''.join(random.choice(characters) for i in range(8))
+        pic_name = f'{random_string}_{time.time}.png'
 
-    def frame():
-        pass
+        cv2.imwrite(os.path.join(capture.SAVING_DIR, pic_name), frame)
+    
+
+
 
 class stream:
-    SAVING_DIR = os.path.
     def run(camera, flag):
         '''returns frame'''
         while not flag.is_set():
@@ -29,12 +44,5 @@ class stream:
 
             return frame
     
-    def save(frame):
-       
-        characters = string.ascii_letters + string.digits
-        random_string = ''.join(random.choice(characters) for i in range(8))
-        randint = random.randint()
-        name_int = int(time.time)
-        cv2.imwrite(f'{random_string}_{time.time}.png', frame)
 
 
