@@ -4,3 +4,4 @@ data/.DS_Store
 /testImages
 .DS_Store
 /detector/models
+/detector/__pycache__

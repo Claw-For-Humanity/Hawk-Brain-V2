@@ -5,7 +5,7 @@ import threading
 import A1_test as test
 import A1_tower as tower
 import cv2
-import realtime_detector
+import detector.A1_realtime_detector as A1_realtime_detector
 
 
 
@@ -82,11 +82,15 @@ def pickUp() -> str:
         pass
     if set_position('pickUp'):
         pass
+
     # TODO: picture here
+    
 
     # TODO: gripper here
 
     # return target bin
+    
+    # TODO: 
 
 def perform():
     target = None
