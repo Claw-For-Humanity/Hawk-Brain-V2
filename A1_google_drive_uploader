@@ -1,0 +1,39 @@
+from google.oauth2 import service_account
+from googleapiclient.http import MediaFileUpload
+from googleapiclient.discovery import build
+import os
+
+class google_driver:
+    PATH_credentials_json = None
+    PATH_captured_images = None
+
+    def __init__(DEFAULT, file_id):
+        google_driver.PATH_credentials_json = os.path.join(DEFAULT, f'{file_id}.json')
+        google_driver.PATH_captured_images = os.path.join(DEFAULT, 'capturedImages')
+
+
+    def upload(name):
+        '''make sure to include .png as well'''     
+        # Set the path to the file you want to upload
+        upload_target = os.path.join(google_driver.PATH_captured_images, f'{name}')
+        
+        # Authenticate using service account credentials
+        credentials = service_account.Credentials.from_service_account_file(
+            google_driver.PATH_credentials_json,
+            scopes=['https://www.googleapis.com/auth/drive']
+        )
+
+        # Build the Drive API service
+        service = build('drive', 'v3', credentials=credentials)
+
+        # File metadata
+        file_metadata = {'name': f'{name}'}  # Change the name as desired
+
+        # Media upload
+        media = MediaFileUpload(upload_target, resumable=True)
+
+        # File upload
+        file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+
+        print('File ID: %s' % file.get('id'))
+        print('upload completed')
