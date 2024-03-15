@@ -2,7 +2,7 @@ from googleapiclient.discovery import build
 from google.oauth2 import service_account
 import os
 
-class google_driver:
+class initializer:
     SCOPES = ['https://www.googleapis.com/auth/drive'] # final
 
     PATH_SERVICE_ACCOUNT_FILE = None
@@ -11,39 +11,41 @@ class google_driver:
     ID_PARENT_FOLDER = None
 
 
-    def __init__(DEFAULT_PATH, file_id, parent_id):
-        google_driver.PATH_SERVICE_ACCOUNT_FILE = os.path.join(DEFAULT_PATH, 'data', f'{file_id}.json')
-        google_driver.PATH_CAPTURED_IMAGES = os.path.join(DEFAULT_PATH, 'capturedImages')
-        google_driver.ID_PARENT_FOLDER = parent_id
+    def __init__(DEFAULT_PATH, account_id, destination_parent_id):
+        '''example is
+        (default_base_folder, "cfh-hawkeye-xxxxxx", "xxxxxx (end of the addy)")'''
+        initializer.PATH_SERVICE_ACCOUNT_FILE = os.path.join(DEFAULT_PATH, 'data', f'{account_id}.json')
+        initializer.PATH_CAPTURED_IMAGES = os.path.join(DEFAULT_PATH, 'capturedImages')
+        initializer.ID_PARENT_FOLDER = destination_parent_id
 
         # define creds and authenticate
-        google_driver.creds = google_driver.authenticate()
+        initializer.creds = initializer.authenticate()
 
         
     
     def authenticate():
-        creds = service_account.Credentials.from_service_account_file(google_driver.PATH_SERVICE_ACCOUNT_FILE, scopes = google_driver.SCOPES)
+        creds = service_account.Credentials.from_service_account_file(initializer.PATH_SERVICE_ACCOUNT_FILE, scopes = initializer.SCOPES)
         return creds
 
-
-    def upload_photo(image_name, upload_name):
+class uploader:
+    def photo(image_name, upload_name):
         '''make sure to include format of the file as well i.e.) .png '''
-        if google_driver.PATH_CAPTURED_IMAGES == None or google_driver.PATH_SERVICE_ACCOUNT_FILE == None or google_driver.creds == None:
+        if initializer.PATH_CAPTURED_IMAGES == None or initializer.PATH_SERVICE_ACCOUNT_FILE == None or initializer.creds == None:
             print("initialize first!")
-            print(f"[LOG] : {google_driver.PATH_CAPTURED_IMAGES}")
-            print(f"[LOG] : {google_driver.PATH_SERVICE_ACCOUNT_FILE}")
-            print(f"[LOG] : {google_driver.creds}")
+            print(f"[LOG] : {initializer.PATH_CAPTURED_IMAGES}")
+            print(f"[LOG] : {initializer.PATH_SERVICE_ACCOUNT_FILE}")
+            print(f"[LOG] : {initializer.creds}")
             
             exit()
         
-        service = build('drive', 'v3', credentials=google_driver.creds)
+        service = build('drive', 'v3', credentials=initializer.creds)
 
         file_metadata = {
             'name':f"{upload_name}",
-            'parents': [google_driver.ID_PARENT_FOLDER]
+            'parents': [initializer.ID_PARENT_FOLDER]
         }
 
-        file_path = os.path.join(google_driver.PATH_CAPTURED_IMAGES, f'{image_name}')
+        file_path = os.path.join(initializer.PATH_CAPTURED_IMAGES, f'{image_name}')
 
         file = service.files().create(
             body=file_metadata,
@@ -52,6 +54,8 @@ class google_driver:
 
         print('uploaded!')
 
-default = os.path.abspath('./')
-google_driver.__init__(default, "cfh-hawkeye-adb016b59179", "1NPciFwLIoW_ysdBg3ObeXRN4QvJBMXBl")
-google_driver.upload_photo("image.png", "test1.png")
+
+# for debugging
+# default = os.path.abspath('./')
+# google_driver.__init__(default, "cfh-hawkeye-adb016b59179", "1NPciFwLIoW_ysdBg3ObeXRN4QvJBMXBl")
+# google_driver.upload_photo("image.png", "test1.png")
