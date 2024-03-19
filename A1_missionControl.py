@@ -118,7 +118,6 @@ class main:
         googley.uploader.photo(saved_name, saved_name)
 
         print(f'uploaded to drive as {saved_name}!')
-        
 
 
     def perform():
