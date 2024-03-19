@@ -56,7 +56,7 @@ class main:
 
     def set_position(position) -> bool:
         if position == 'default':
-            main.mc.send_coords
+            main.mc.send_coords([0, 0, 0, 0, 0, 0],30)
             time.sleep(2)
             return True
         
@@ -73,7 +73,7 @@ class main:
             return True
 
         elif position == 'recycling':
-            main.mc.send_coords
+            main.mc.send_angles()
             time.sleep(2)
             print('done!')
             return True
