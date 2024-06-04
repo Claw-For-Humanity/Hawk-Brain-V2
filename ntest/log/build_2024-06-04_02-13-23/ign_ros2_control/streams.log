@@ -1,0 +1,47 @@
+[0.020s] Invoking command in '/home/cfh/ntest/build/ign_ros2_control': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/cfh/ntest/install/mycobot_description:/home/cfh/robo_ws/install/mycobot_description:/home/cfh/ws_moveit2/install/moveit_configs_utils:/home/cfh/ws_moveit2/install/launch_param_builder:/home/cfh/colcon_ws/install/mycobot_320pi:/home/cfh/colcon_ws/install/mycobot_description:/home/cfh/colcon_ws/install/mycobot_communication:/opt/ros/humble /usr/bin/cmake --build /home/cfh/ntest/build/ign_ros2_control -- -j24 -l24
+[0.166s] -- Found ament_cmake: 1.3.9 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.166s] -- Found ament_index_cpp: 1.4.0 (/opt/ros/humble/share/ament_index_cpp/cmake)
+[0.166s] -- Found controller_manager: 2.41.0 (/opt/ros/humble/share/controller_manager/cmake)
+[0.226s] -- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.228s] -- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.232s] -- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.239s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.253s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.399s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[1.401s] -- Found rmw_fastrtps_cpp: 6.2.6 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[1.420s] -- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+[1.425s] -- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+[1.500s] -- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+[1.505s] -- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+[1.565s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.914s] -- Found yaml_cpp_vendor: 8.0.2 (/opt/ros/humble/share/yaml_cpp_vendor/cmake)
+[1.915s] -- Looking for ignition-gazebo6 -- found version 6.16.0
+[1.918s] -- Searching for dependencies of ignition-gazebo6
+[1.918s] -- Looking for sdformat12 -- found version 12.7.2
+[1.918s] -- Searching for dependencies of sdformat12
+[1.921s] -- Looking for ignition-math6 -- found version 6.15.1
+[1.922s] -- Searching for dependencies of ignition-math6
+[2.718s] [31mCMake Error at /usr/lib/x86_64-linux-gnu/cmake/sdformat12/sdformat12-config.cmake:94 (find_package):
+[2.718s]   By not providing "Findignition-utils1.cmake" in CMAKE_MODULE_PATH this
+[2.718s]   project has asked CMake to find a package configuration file provided by
+[2.718s]   "ignition-utils1", but CMake did not find one.
+[2.718s] 
+[2.718s]   Could not find a package configuration file provided by "ignition-utils1"
+[2.718s]   with any of the following names:
+[2.718s] 
+[2.718s]     ignition-utils1Config.cmake
+[2.719s]     ignition-utils1-config.cmake
+[2.719s] 
+[2.719s]   Add the installation prefix of "ignition-utils1" to CMAKE_PREFIX_PATH or
+[2.719s]   set "ignition-utils1_DIR" to a directory containing one of the above files.
+[2.719s]   If "ignition-utils1" provides a separate development package or SDK, be
+[2.719s]   sure it has been installed.
+[2.719s] Call Stack (most recent call first):
+[2.719s]   /usr/lib/x86_64-linux-gnu/cmake/ignition-gazebo6/ignition-gazebo6-config.cmake:92 (find_package)
+[2.719s]   CMakeLists.txt:43 (find_package)
+[2.719s] 
+[2.719s] [0m
+[2.719s] -- Configuring incomplete, errors occurred!
+[2.719s] See also "/home/cfh/ntest/build/ign_ros2_control/CMakeFiles/CMakeOutput.log".
+[2.723s] gmake: *** [Makefile:308: cmake_check_build_system] Error 1
+[2.724s] Invoked command in '/home/cfh/ntest/build/ign_ros2_control' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/cfh/ntest/install/mycobot_description:/home/cfh/robo_ws/install/mycobot_description:/home/cfh/ws_moveit2/install/moveit_configs_utils:/home/cfh/ws_moveit2/install/launch_param_builder:/home/cfh/colcon_ws/install/mycobot_320pi:/home/cfh/colcon_ws/install/mycobot_description:/home/cfh/colcon_ws/install/mycobot_communication:/opt/ros/humble /usr/bin/cmake --build /home/cfh/ntest/build/ign_ros2_control -- -j24 -l24
