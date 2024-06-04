@@ -1,0 +1,4 @@
+Invoking command in '/home/cfh/ntest/build/ign_ros2_control': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/cfh/ntest/build/ign_ros2_control -- -j24 -l24
+Invoked command in '/home/cfh/ntest/build/ign_ros2_control' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/cfh/ntest/build/ign_ros2_control -- -j24 -l24
+Invoking command in '/home/cfh/ntest/build/ign_ros2_control': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/cfh/ntest/build/ign_ros2_control
+Invoked command in '/home/cfh/ntest/build/ign_ros2_control' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/cfh/ntest/build/ign_ros2_control

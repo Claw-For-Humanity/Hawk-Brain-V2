@@ -1,0 +1,30 @@
+-- Found ament_cmake: 1.3.9 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found ament_lint_auto: 0.12.11 (/opt/ros/humble/share/ament_lint_auto/cmake)
+-- Added test 'flake8' to check Python code syntax and style conventions
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+-- Added test 'xmllint' to check XML markup files
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/cfh/ntest/build/six_dof_arm
+-- Install configuration: ""
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/launch
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/launch/gazebo.launch.py
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/launch/gazebov1.launch.py
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/urdf
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/meshes
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/ament_index/resource_index/package_run_dependencies/six_dof_arm
+-- Installing: /home/cfh/ntest/install/six_dof_arm/share/ament_index/resource_index/parent_prefix_path/six_dof_arm
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/environment/ament_prefix_path.sh
+-- Installing: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/environment/ament_prefix_path.dsv
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/environment/path.sh
+-- Installing: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/environment/path.dsv
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/local_setup.bash
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/local_setup.sh
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/local_setup.zsh
+-- Installing: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/local_setup.dsv
+-- Installing: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/package.dsv
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/ament_index/resource_index/packages/six_dof_arm
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/cmake/six_dof_armConfig.cmake
+-- Up-to-date: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/cmake/six_dof_armConfig-version.cmake
+-- Installing: /home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/package.xml
