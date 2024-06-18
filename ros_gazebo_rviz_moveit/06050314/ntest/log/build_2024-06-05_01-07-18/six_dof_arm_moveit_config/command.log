@@ -1,0 +1,2 @@
+Invoking command in '/home/cfh/ntest/build/six_dof_arm_moveit_config': /usr/bin/cmake --build /home/cfh/ntest/build/six_dof_arm_moveit_config -- -j24 -l24
+Invoked command in '/home/cfh/ntest/build/six_dof_arm_moveit_config' returned '2': /usr/bin/cmake --build /home/cfh/ntest/build/six_dof_arm_moveit_config -- -j24 -l24

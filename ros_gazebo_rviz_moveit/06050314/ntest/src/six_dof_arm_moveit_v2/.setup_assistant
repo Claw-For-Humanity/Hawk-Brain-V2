@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: mycobot_description
+    relative_path: urdf/mycobot_320_pi_2022/new_mycobot_pro_320_pi_moveit_2022.urdf
+  srdf:
+    relative_path: config/firefighter.srdf
+  package_settings:
+    author_name: eric
+    author_email: ceo.ekang@clawforhumanity.ca
+    generated_timestamp: 1717579811
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

@@ -1,0 +1,59 @@
+[0.281s] Invoking command in '/home/cfh/ntest/src/mycobot_description': PYTHONPATH=/home/cfh/ntest/build/mycobot_description/prefix_override:/home/cfh/ntest/install/mycobot_description/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/mycobot_description build --build-base /home/cfh/ntest/build/mycobot_description/build install --record /home/cfh/ntest/build/mycobot_description/install.log --install-scripts $base/lib/mycobot_description --single-version-externally-managed install_data
+[0.381s] /usr/lib/python3/dist-packages/setuptools/dist.py:723: UserWarning: Usage of dash-separated 'script-dir' will not be supported in future versions. Please use the underscore name 'script_dir' instead
+[0.381s]   warnings.warn(
+[0.384s] running egg_info
+[0.385s] creating ../../build/mycobot_description/mycobot_description.egg-info
+[0.385s] writing ../../build/mycobot_description/mycobot_description.egg-info/PKG-INFO
+[0.385s] writing dependency_links to ../../build/mycobot_description/mycobot_description.egg-info/dependency_links.txt
+[0.385s] writing entry points to ../../build/mycobot_description/mycobot_description.egg-info/entry_points.txt
+[0.385s] writing requirements to ../../build/mycobot_description/mycobot_description.egg-info/requires.txt
+[0.385s] writing top-level names to ../../build/mycobot_description/mycobot_description.egg-info/top_level.txt
+[0.385s] writing manifest file '../../build/mycobot_description/mycobot_description.egg-info/SOURCES.txt'
+[0.386s] reading manifest file '../../build/mycobot_description/mycobot_description.egg-info/SOURCES.txt'
+[0.386s] adding license file 'LICENSE'
+[0.386s] writing manifest file '../../build/mycobot_description/mycobot_description.egg-info/SOURCES.txt'
+[0.386s] running build
+[0.386s] running build_py
+[0.387s] creating /home/cfh/ntest/build/mycobot_description/build
+[0.387s] creating /home/cfh/ntest/build/mycobot_description/build/lib
+[0.387s] creating /home/cfh/ntest/build/mycobot_description/build/lib/mycobot_description
+[0.387s] copying mycobot_description/__init__.py -> /home/cfh/ntest/build/mycobot_description/build/lib/mycobot_description
+[0.387s] running install
+[0.387s] running install_lib
+[0.387s] creating /home/cfh/ntest/install/mycobot_description/lib/python3.10/site-packages/mycobot_description
+[0.387s] copying /home/cfh/ntest/build/mycobot_description/build/lib/mycobot_description/__init__.py -> /home/cfh/ntest/install/mycobot_description/lib/python3.10/site-packages/mycobot_description
+[0.388s] byte-compiling /home/cfh/ntest/install/mycobot_description/lib/python3.10/site-packages/mycobot_description/__init__.py to __init__.cpython-310.pyc
+[0.388s] running install_data
+[0.388s] creating /home/cfh/ntest/install/mycobot_description/share/ament_index
+[0.388s] creating /home/cfh/ntest/install/mycobot_description/share/ament_index/resource_index
+[0.388s] creating /home/cfh/ntest/install/mycobot_description/share/ament_index/resource_index/packages
+[0.388s] copying resource/mycobot_description -> /home/cfh/ntest/install/mycobot_description/share/ament_index/resource_index/packages
+[0.388s] copying package.xml -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description
+[0.388s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf
+[0.388s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mypalletizer_260_pi
+[0.388s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_280_jn
+[0.388s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_m5_2022
+[0.388s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_pro_600
+[0.388s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_280_m5
+[0.388s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_280_pi
+[0.388s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mecharm_270_m5
+[0.388s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mecharm_270_pi
+[0.389s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+[0.389s] copying urdf/mycobot_320_pi_2022/link6.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+[0.389s] copying urdf/mycobot_320_pi_2022/base.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+[0.399s] copying urdf/mycobot_320_pi_2022/mycobot_320_pi_2022.urdf -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+[0.399s] copying urdf/mycobot_320_pi_2022/link4.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+[0.401s] copying urdf/mycobot_320_pi_2022/link1.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+[0.404s] copying urdf/mycobot_320_pi_2022/link3.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+[0.409s] copying urdf/mycobot_320_pi_2022/link5.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+[0.411s] copying urdf/mycobot_320_pi_2022/link2.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+[0.415s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mybuddy
+[0.415s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/ultraArm_p340
+[0.416s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_280_x3pi
+[0.416s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/myarm_300_pi
+[0.416s] creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_pro_630
+[0.416s] running install_egg_info
+[0.417s] Copying ../../build/mycobot_description/mycobot_description.egg-info to /home/cfh/ntest/install/mycobot_description/lib/python3.10/site-packages/mycobot_description-0.0.0-py3.10.egg-info
+[0.417s] running install_scripts
+[0.427s] writing list of installed files to '/home/cfh/ntest/build/mycobot_description/install.log'
+[0.437s] Invoked command in '/home/cfh/ntest/src/mycobot_description' returned '0': PYTHONPATH=/home/cfh/ntest/build/mycobot_description/prefix_override:/home/cfh/ntest/install/mycobot_description/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base ../../build/mycobot_description build --build-base /home/cfh/ntest/build/mycobot_description/build install --record /home/cfh/ntest/build/mycobot_description/install.log --install-scripts $base/lib/mycobot_description --single-version-externally-managed install_data

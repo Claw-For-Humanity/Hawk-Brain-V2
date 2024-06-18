@@ -1,0 +1,17 @@
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/launch/gazebo.launch.py
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/launch/gazebov1.launch.py
+/home/cfh/ntest/install/six_dof_arm/share/ament_index/resource_index/package_run_dependencies/six_dof_arm
+/home/cfh/ntest/install/six_dof_arm/share/ament_index/resource_index/parent_prefix_path/six_dof_arm
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/environment/ament_prefix_path.sh
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/environment/ament_prefix_path.dsv
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/environment/path.sh
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/environment/path.dsv
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/local_setup.bash
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/local_setup.sh
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/local_setup.zsh
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/local_setup.dsv
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/package.dsv
+/home/cfh/ntest/install/six_dof_arm/share/ament_index/resource_index/packages/six_dof_arm
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/cmake/six_dof_armConfig.cmake
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/cmake/six_dof_armConfig-version.cmake
+/home/cfh/ntest/install/six_dof_arm/share/six_dof_arm/package.xml

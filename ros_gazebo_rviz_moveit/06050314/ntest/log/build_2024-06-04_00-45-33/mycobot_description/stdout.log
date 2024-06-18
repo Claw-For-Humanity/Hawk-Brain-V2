@@ -1,0 +1,55 @@
+running egg_info
+creating ../../build/mycobot_description/mycobot_description.egg-info
+writing ../../build/mycobot_description/mycobot_description.egg-info/PKG-INFO
+writing dependency_links to ../../build/mycobot_description/mycobot_description.egg-info/dependency_links.txt
+writing entry points to ../../build/mycobot_description/mycobot_description.egg-info/entry_points.txt
+writing requirements to ../../build/mycobot_description/mycobot_description.egg-info/requires.txt
+writing top-level names to ../../build/mycobot_description/mycobot_description.egg-info/top_level.txt
+writing manifest file '../../build/mycobot_description/mycobot_description.egg-info/SOURCES.txt'
+reading manifest file '../../build/mycobot_description/mycobot_description.egg-info/SOURCES.txt'
+adding license file 'LICENSE'
+writing manifest file '../../build/mycobot_description/mycobot_description.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/cfh/ntest/build/mycobot_description/build
+creating /home/cfh/ntest/build/mycobot_description/build/lib
+creating /home/cfh/ntest/build/mycobot_description/build/lib/mycobot_description
+copying mycobot_description/__init__.py -> /home/cfh/ntest/build/mycobot_description/build/lib/mycobot_description
+running install
+running install_lib
+creating /home/cfh/ntest/install/mycobot_description/lib/python3.10/site-packages/mycobot_description
+copying /home/cfh/ntest/build/mycobot_description/build/lib/mycobot_description/__init__.py -> /home/cfh/ntest/install/mycobot_description/lib/python3.10/site-packages/mycobot_description
+byte-compiling /home/cfh/ntest/install/mycobot_description/lib/python3.10/site-packages/mycobot_description/__init__.py to __init__.cpython-310.pyc
+running install_data
+creating /home/cfh/ntest/install/mycobot_description/share/ament_index
+creating /home/cfh/ntest/install/mycobot_description/share/ament_index/resource_index
+creating /home/cfh/ntest/install/mycobot_description/share/ament_index/resource_index/packages
+copying resource/mycobot_description -> /home/cfh/ntest/install/mycobot_description/share/ament_index/resource_index/packages
+copying package.xml -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mypalletizer_260_pi
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_280_jn
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_m5_2022
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_pro_600
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_280_m5
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_280_pi
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mecharm_270_m5
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mecharm_270_pi
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+copying urdf/mycobot_320_pi_2022/link6.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+copying urdf/mycobot_320_pi_2022/base.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+copying urdf/mycobot_320_pi_2022/mycobot_320_pi_2022.urdf -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+copying urdf/mycobot_320_pi_2022/link4.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+copying urdf/mycobot_320_pi_2022/link1.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+copying urdf/mycobot_320_pi_2022/link3.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+copying urdf/mycobot_320_pi_2022/link5.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+copying urdf/mycobot_320_pi_2022/link2.dae -> /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_320_pi_2022
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mybuddy
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/ultraArm_p340
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_280_x3pi
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/myarm_300_pi
+creating /home/cfh/ntest/install/mycobot_description/share/mycobot_description/urdf/mycobot_pro_630
+running install_egg_info
+Copying ../../build/mycobot_description/mycobot_description.egg-info to /home/cfh/ntest/install/mycobot_description/lib/python3.10/site-packages/mycobot_description-0.0.0-py3.10.egg-info
+running install_scripts
+writing list of installed files to '/home/cfh/ntest/build/mycobot_description/install.log'

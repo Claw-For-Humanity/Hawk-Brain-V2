@@ -1,0 +1,47 @@
+[0.015s] Invoking command in '/home/cfh/ntest/build/ign_ros2_control': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/cfh/ntest/install/mycobot_description:/home/cfh/ws_moveit2/install/moveit_configs_utils:/home/cfh/ws_moveit2/install/launch_param_builder:/home/cfh/colcon_ws/install/mycobot_320pi:/home/cfh/colcon_ws/install/mycobot_description:/home/cfh/colcon_ws/install/mycobot_communication:/opt/ros/humble /usr/bin/cmake --build /home/cfh/ntest/build/ign_ros2_control -- -j24 -l24
+[0.130s] -- Found ament_cmake: 1.3.9 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.130s] -- Found ament_index_cpp: 1.4.0 (/opt/ros/humble/share/ament_index_cpp/cmake)
+[0.130s] -- Found controller_manager: 2.41.0 (/opt/ros/humble/share/controller_manager/cmake)
+[0.149s] -- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.150s] -- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.153s] -- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.160s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.168s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.893s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[0.895s] -- Found rmw_fastrtps_cpp: 6.2.6 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[0.909s] -- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+[0.914s] -- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+[0.956s] -- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+[0.960s] -- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+[0.994s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.284s] -- Found yaml_cpp_vendor: 8.0.2 (/opt/ros/humble/share/yaml_cpp_vendor/cmake)
+[1.285s] -- Looking for ignition-gazebo6 -- found version 6.16.0
+[1.287s] -- Searching for dependencies of ignition-gazebo6
+[1.287s] -- Looking for sdformat12 -- found version 12.7.2
+[1.287s] -- Searching for dependencies of sdformat12
+[1.290s] -- Looking for ignition-math6 -- found version 6.15.1
+[1.290s] -- Searching for dependencies of ignition-math6
+[1.687s] [31mCMake Error at /usr/lib/x86_64-linux-gnu/cmake/sdformat12/sdformat12-config.cmake:94 (find_package):
+[1.687s]   By not providing "Findignition-utils1.cmake" in CMAKE_MODULE_PATH this
+[1.687s]   project has asked CMake to find a package configuration file provided by
+[1.687s]   "ignition-utils1", but CMake did not find one.
+[1.687s] 
+[1.687s]   Could not find a package configuration file provided by "ignition-utils1"
+[1.687s]   with any of the following names:
+[1.687s] 
+[1.687s]     ignition-utils1Config.cmake
+[1.687s]     ignition-utils1-config.cmake
+[1.687s] 
+[1.687s]   Add the installation prefix of "ignition-utils1" to CMAKE_PREFIX_PATH or
+[1.687s]   set "ignition-utils1_DIR" to a directory containing one of the above files.
+[1.687s]   If "ignition-utils1" provides a separate development package or SDK, be
+[1.687s]   sure it has been installed.
+[1.687s] Call Stack (most recent call first):
+[1.687s]   /usr/lib/x86_64-linux-gnu/cmake/ignition-gazebo6/ignition-gazebo6-config.cmake:92 (find_package)
+[1.687s]   CMakeLists.txt:43 (find_package)
+[1.687s] 
+[1.687s] [0m
+[1.687s] -- Configuring incomplete, errors occurred!
+[1.687s] See also "/home/cfh/ntest/build/ign_ros2_control/CMakeFiles/CMakeOutput.log".
+[1.691s] gmake: *** [Makefile:308: cmake_check_build_system] Error 1
+[1.692s] Invoked command in '/home/cfh/ntest/build/ign_ros2_control' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/cfh/ntest/install/mycobot_description:/home/cfh/ws_moveit2/install/moveit_configs_utils:/home/cfh/ws_moveit2/install/launch_param_builder:/home/cfh/colcon_ws/install/mycobot_320pi:/home/cfh/colcon_ws/install/mycobot_description:/home/cfh/colcon_ws/install/mycobot_communication:/opt/ros/humble /usr/bin/cmake --build /home/cfh/ntest/build/ign_ros2_control -- -j24 -l24
