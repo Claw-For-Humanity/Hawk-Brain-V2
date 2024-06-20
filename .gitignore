@@ -11,3 +11,4 @@ data/.DS_Store
 /detector/taco_config
 /capturedImages
 *.pyc
+*.log
