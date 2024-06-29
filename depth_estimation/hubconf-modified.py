@@ -33,92 +33,6 @@ MODEL_TYPE = {
   },
 }
 
-
-
-def metric3d_convnext_tiny(pretrain=False, **kwargs):
-  '''
-  Return a Metric3D model with ConvNeXt-Large backbone and Hourglass-Decoder head.
-  For usage examples, refer to: https://github.com/YvanYin/Metric3D/blob/main/hubconf.py
-  Args:
-    pretrain (bool): whether to load pretrained weights.
-  Returns:
-    model (nn.Module): a Metric3D model.
-  '''
-  cfg_file = MODEL_TYPE['ConvNeXt-Tiny']['cfg_file']
-  ckpt_file = MODEL_TYPE['ConvNeXt-Tiny']['ckpt_file']
-
-  cfg = Config.fromfile(cfg_file)
-  model = get_configured_monodepth_model(cfg)
-  if pretrain:
-    model.load_state_dict(
-      torch.hub.load_state_dict_from_url(ckpt_file)['model_state_dict'], 
-      strict=False,
-    )
-  return model
-
-def metric3d_convnext_large(pretrain=False, **kwargs):
-  '''
-  Return a Metric3D model with ConvNeXt-Large backbone and Hourglass-Decoder head.
-  For usage examples, refer to: https://github.com/YvanYin/Metric3D/blob/main/hubconf.py
-  Args:
-    pretrain (bool): whether to load pretrained weights.
-  Returns:
-    model (nn.Module): a Metric3D model.
-  '''
-  cfg_file = MODEL_TYPE['ConvNeXt-Large']['cfg_file']
-  ckpt_file = MODEL_TYPE['ConvNeXt-Large']['ckpt_file']
-
-  cfg = Config.fromfile(cfg_file)
-  model = get_configured_monodepth_model(cfg)
-  if pretrain:
-    model.load_state_dict(
-      torch.hub.load_state_dict_from_url(ckpt_file)['model_state_dict'], 
-      strict=False,
-    )
-  return model
-
-def metric3d_vit_small(pretrain=False, **kwargs):
-  '''
-  Return a Metric3D model with ViT-Small backbone and RAFT-4iter head.
-  For usage examples, refer to: https://github.com/YvanYin/Metric3D/blob/main/hubconf.py
-  Args:
-    pretrain (bool): whether to load pretrained weights.
-  Returns:
-    model (nn.Module): a Metric3D model.
-  '''
-  cfg_file = MODEL_TYPE['ViT-Small']['cfg_file']
-  ckpt_file = MODEL_TYPE['ViT-Small']['ckpt_file']
-
-  cfg = Config.fromfile(cfg_file)
-  model = get_configured_monodepth_model(cfg)
-  if pretrain:
-    model.load_state_dict(
-      torch.hub.load_state_dict_from_url(ckpt_file)['model_state_dict'], 
-      strict=False,
-    )
-  return model
-
-def metric3d_vit_large(pretrain=False, **kwargs):
-  '''
-  Return a Metric3D model with ViT-Large backbone and RAFT-8iter head.
-  For usage examples, refer to: https://github.com/YvanYin/Metric3D/blob/main/hubconf.py
-  Args:
-    pretrain (bool): whether to load pretrained weights.
-  Returns:
-    model (nn.Module): a Metric3D model.
-  '''
-  cfg_file = MODEL_TYPE['ViT-Large']['cfg_file']
-  ckpt_file = MODEL_TYPE['ViT-Large']['ckpt_file']
-
-  cfg = Config.fromfile(cfg_file)
-  model = get_configured_monodepth_model(cfg)
-  if pretrain:
-    model.load_state_dict(
-      torch.hub.load_state_dict_from_url(ckpt_file)['model_state_dict'], 
-      strict=False,
-    )
-  return model
-
 def metric3d_vit_giant2(pretrain=False, **kwargs):
   '''
   Return a Metric3D model with ViT-Giant2 backbone and RAFT-8iter head.
@@ -139,7 +53,6 @@ def metric3d_vit_giant2(pretrain=False, **kwargs):
       strict=False,
     )
   return model
-
 
 
 if __name__ == '__main__':
