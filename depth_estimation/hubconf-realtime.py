@@ -55,18 +55,11 @@ if __name__ == '__main__':
       break
     
     rgb_origin = frame[:, :, ::-1]  # Convert BGR to RGB
-    h, w = rgb.shape[:2]
-    input_size = (616, 1064)  # Change this as required by your model
-    scale = min(input_size[0] / h, input_size[1] / w)
-    rgb = cv2.resize(rgb, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_LINEAR)
-
-
-
-
+  
 
     #### prepare data
     intrinsic = [707.0493, 707.0493, 604.0814, 180.5066]
-    gt_depth_scale = 256.0
+    gt_depth_scale = 256.0 # im not sure if scale == gt depth scale.
 
     #### ajust input size to fit pretrained model
     # keep ratio resize
@@ -125,4 +118,4 @@ if __name__ == '__main__':
       # such as visualize pred_normal
       pred_normal_vis = pred_normal.cpu().numpy().transpose((1, 2, 0))
       pred_normal_vis = (pred_normal_vis + 1) / 2
-      cv2.imwrite('normal_vis.png', (pred_normal_vis * 255).astype(np.uint8))
+      cv2.imwrite('realtime_vis.png', (pred_normal_vis * 255).astype(np.uint8))
