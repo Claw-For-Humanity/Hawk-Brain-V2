@@ -1,9 +1,0 @@
-/Users/changbeankang/Claw_For_Humanity/HOS_II/Hawk-ReSolve/ros_gazebo_rviz_moveit/ntest/build/ntest/CMakeFiles/uninstall.dir
-/Users/changbeankang/Claw_For_Humanity/HOS_II/Hawk-ReSolve/ros_gazebo_rviz_moveit/ntest/build/ntest/CMakeFiles/ntest_uninstall.dir
-/Users/changbeankang/Claw_For_Humanity/HOS_II/Hawk-ReSolve/ros_gazebo_rviz_moveit/ntest/build/ntest/CMakeFiles/test.dir
-/Users/changbeankang/Claw_For_Humanity/HOS_II/Hawk-ReSolve/ros_gazebo_rviz_moveit/ntest/build/ntest/CMakeFiles/edit_cache.dir
-/Users/changbeankang/Claw_For_Humanity/HOS_II/Hawk-ReSolve/ros_gazebo_rviz_moveit/ntest/build/ntest/CMakeFiles/rebuild_cache.dir
-/Users/changbeankang/Claw_For_Humanity/HOS_II/Hawk-ReSolve/ros_gazebo_rviz_moveit/ntest/build/ntest/CMakeFiles/list_install_components.dir
-/Users/changbeankang/Claw_For_Humanity/HOS_II/Hawk-ReSolve/ros_gazebo_rviz_moveit/ntest/build/ntest/CMakeFiles/install.dir
-/Users/changbeankang/Claw_For_Humanity/HOS_II/Hawk-ReSolve/ros_gazebo_rviz_moveit/ntest/build/ntest/CMakeFiles/install/local.dir
-/Users/changbeankang/Claw_For_Humanity/HOS_II/Hawk-ReSolve/ros_gazebo_rviz_moveit/ntest/build/ntest/CMakeFiles/install/strip.dir
