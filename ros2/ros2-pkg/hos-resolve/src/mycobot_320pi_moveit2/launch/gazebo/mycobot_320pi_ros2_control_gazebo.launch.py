@@ -17,13 +17,11 @@ def generate_launch_description():
   package_name_mycobot = 'mycobot_320pi_moveit2'
 
   default_robot_name = 'mycobot_320pi'
-  gazebo_launch_file_path = 'launch'
   gazebo_models_path = 'models'
 
   ros_gz_bridge_config_file_path = 'config/ros_gz_bridge.yaml'
-  rviz_config_file_path = 'config/mycobot_320_pi.rviz'
+  rviz_config_file_path = 'config/rviz/mycobot_320_pi.rviz'
   urdf_file_path = 'urdf/mycobot_320_pi_2022/mycobot_320_pi_moveit_2022_gz.urdf.xacro'
-  world_file_path = 'worlds/empty.world' # e.g. 'world/empty.world', 'world/house.world'
 
   # Set the path to different files and folders.  
   pkg_ros_gz_sim = FindPackageShare(package='ros_gz_sim').find('ros_gz_sim')  
@@ -34,10 +32,8 @@ def generate_launch_description():
   default_ros_gz_bridge_config_file_path = os.path.join(pkg_share_mycobot, ros_gz_bridge_config_file_path)
   default_rviz_config_path = os.path.join(package_name_mycobot, rviz_config_file_path) # under mycobot
   default_urdf_model_path = os.path.join(pkg_share_description, urdf_file_path) # under desc.
-  gazebo_launch_file_path = os.path.join(pkg_share_mycobot, gazebo_launch_file_path) # what is this for?
-  gazebo_models_path = os.path.join(pkg_share_mycobot, gazebo_models_path) # why we need this?
-  world_path = os.path.join(pkg_share_mycobot, world_file_path) # again why we need this?
 
+  gazebo_models_path = os.path.join(pkg_share_mycobot, gazebo_models_path) # [IMPORTANT] gazebo resource path 
 
 
 
@@ -105,11 +101,6 @@ def generate_launch_description():
     name='use_simulator',
     default_value='True',
     description='Whether to start Gazebo')
-
-  declare_world_cmd = DeclareLaunchArgument(
-    name='world',
-    default_value=world_path,
-    description='Full path to the world model file to load')
 
   declare_x_cmd = DeclareLaunchArgument(
     name='x',
@@ -224,7 +215,6 @@ def generate_launch_description():
   ld.add_action(declare_use_rviz_cmd) 
   ld.add_action(declare_use_sim_time_cmd)
   ld.add_action(declare_use_simulator_cmd)
-  ld.add_action(declare_world_cmd)
 
   ld.add_action(declare_x_cmd)
   ld.add_action(declare_y_cmd)
@@ -245,3 +235,9 @@ def generate_launch_description():
 
   return ld
 
+
+
+# once built and sourced,
+# make sure to add robot_description and set robot_description (if you don't go through this process, rviz will show nothing)
+
+# planning scene wip
