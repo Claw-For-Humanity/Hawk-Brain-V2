@@ -1,36 +1,11 @@
 <?xml version="1.0" ?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro" name="mycobot_320pi">
-	<!-- 
-		xml: 	
-			Declare this file as an XML document and specifies the XML version.
-		robot: 	
-			The root element 'robot' defines a robot model. Everything about the 
-			robot configuration will be nested inside this element.
-		xmlns:xacro:	
-			Declares the XML namespace for xacro, which is a XML macro language used 
-			in ROS (Robot Operating System) for parameterizing XML documents.
-		name: 
-			Specify the name of the robot.
-	-->
-	
-	<!-- Reference Files: https://github.com/elephantrobotics/mycobot_ros/ -->
-	
-	<!-- Provide a global reference frame for the robotic arm in simulation (Gazebo) 
-		or visualization (RViz) environments
-	-->
+
 	<link name="world"/>
 
-	<!-- ****************** ROBOT CONSTANTS *******************************  -->
-	<!-- Source: https://www.elephantrobotics.com/en/mycobot280-for-arduino-specifications-en/ -->
-	<!-- Numbers are estimated when necessary -->
 	<xacro:property name="effort" value="5.0"/> <!-- TODO: effort is 1000.00?? -->
 	<xacro:property name="velocity" value="2.792527"/>
 	
-	<!-- ********** LINKS ********** -->
-
-    <!-- Define the base plate of the robotic arm 
-    	The inertial values below were taken from link1 (with slight modification. 
-		They are just placeholder values. -->
 	<link name="base">
 		<inertial>
 			<origin xyz="0 0 0.0" rpy="0 0 0"/>
@@ -42,7 +17,7 @@
 		</inertial>
 		<visual>
 			<geometry> 
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/base.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/base.dae"/>
 			</geometry>
 			<origin xyz = "0.0 0 0 " rpy = " 0 0 1.5708"/>
 		</visual>
@@ -66,7 +41,7 @@
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link1.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/link1.dae"/>
 			</geometry>
 			<origin xyz = "0.0 0.0 -0.078 " rpy = " 0 0 1.5708"/>
 		</visual>
@@ -90,7 +65,7 @@
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link2.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/link2.dae"/>
 			</geometry>
 			<origin xyz = "0.0 0 -0.04 " rpy = " 0 1.5708 0"/>
 		</visual>
@@ -113,7 +88,7 @@
 		</inertial>
 		<visual>
       		<geometry>
-        		<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link3.dae"/>
+        		<mesh filename="file://$(find mycobot_description)/urdf/mesh/link3.dae"/>
       		</geometry>
      		<origin xyz = "0.0 0.0 0.039 " rpy = " 1.5708 1.5708 1.5708"/>
     	</visual>
@@ -136,7 +111,7 @@
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link4.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/link4.dae"/>
 			</geometry>
 			<origin xyz = "0.0 -0.0024 -0.05 " rpy = " 1.5708 1.5708 0"/>
 		</visual>
@@ -159,7 +134,7 @@
 		</inertial>
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link5.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/link5.dae"/>
 			</geometry>
 			<origin xyz = "0.0 0.0 -0.05 " rpy = " 0  0 -1.5708"/>
 		</visual>
@@ -183,7 +158,7 @@
 
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link6.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/link6.dae"/>
 			</geometry>
 			<material name = "grey">
 				<color rgba = "0.5 0.5 0.5 1"/>
@@ -286,14 +261,8 @@
         <dynamics damping="3.0" friction="3.0"/>
 	</joint>
 	
-	<!-- The mimic element means this joint will follow the movements of the 
-		gripper_controller joint. 
-	-->
 
 
-	<!-- ********** PLUGINS ********** -->
-    <!-- Publishes joint state information for the model which the robot_state_publisher uses to broadcast to 
-            the tf topic, the topic that keeps track of the robot's multiple coordinate frames over time -->
     <gazebo>
         <plugin name="gazebo_ros_joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
             <update_rate>20</update_rate>
@@ -306,10 +275,6 @@
         </plugin>
     </gazebo>
 
-    <!-- Subscribes to a JointTrajectory message from the /set_joint_trajectory topic 
-        To publish to this topic type: 
-            ros2 topic pub -1 /set_joint_trajectory trajectory_msgs/msg/JointTrajectory "{header: {frame_id: base_link}, joint_names: [link1_to_link2, link2_to_link3, etc.], points: [{positions: [0.0,0.0,etc.]}]}" 
-    -->
     <gazebo>
         <plugin name="gazebo_ros_joint_pose_trajectory" filename="libgazebo_ros_joint_pose_trajectory.so">
             <update_rate>20</update_rate>

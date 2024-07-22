@@ -18,14 +18,14 @@
 
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/base.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/base.dae"/>
 			</geometry>
 			<origin xyz = "0.0 0 0 " rpy = "0 0 ${pi/2}"/>
 		</visual>
 
 		<collision>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/base.dae"/> 
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/base.dae"/> 
 			</geometry>
 			<origin xyz = "0.0 0 0 " rpy = "0 0 ${pi/2}"/>
 		</collision>
@@ -48,14 +48,14 @@
 
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link1.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/link1.dae"/>
 			</geometry>
 			<origin xyz = "0.0 0 -0.078 " rpy = " 0 0 ${pi/2}"/>
 		</visual>
 
 		<collision>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link1.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/link1.dae"/>
 			</geometry>
 			<origin xyz = "0.0 0 -0.078 " rpy = " 0 0 ${pi/2}"/>
 		</collision>
@@ -78,14 +78,14 @@
 
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link2.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/link2.dae"/>
 			</geometry>
 			<origin xyz = "0.0 0 -0.04 " rpy = " 0 ${pi/2} 0"/>
 		</visual>
 
 		<collision>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link2.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/link2.dae"/>
 			</geometry>
 			<origin xyz = "0.0 0 -0.04 " rpy = " 0 ${pi/2} 0"/>
 		</collision>
@@ -108,14 +108,14 @@
 
 		<visual>
 		  	<geometry>
-		   		<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link3.dae"/>
+		   		<mesh filename="file://$(find mycobot_description)/urdf/mesh/link3.dae"/>
 		  	</geometry>
 			<origin xyz = "0.0 0 0.039 " rpy = " ${pi/2} ${pi/2} ${pi/2}"/>
 		</visual>
 
 		<collision>
 		  	<geometry>
-		   		<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link3.dae"/>
+		   		<mesh filename="file://$(find mycobot_description)/urdf/mesh/link3.dae"/>
 		  	</geometry>
 		  	<origin xyz = "0.0 0 0.039 " rpy = " ${pi/2} ${pi/2} ${pi/2}"/>
 		</collision>
@@ -135,14 +135,14 @@
 
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link4.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/link4.dae"/>
 			</geometry>
 			<origin xyz = "0.0 -0.0024 -0.05 " rpy = "${pi/2} ${pi/2} 0 "/>
 		</visual>
 
 		<collision>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link4.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/link4.dae"/>
 			</geometry>
 			<origin xyz = "0.0 -0.0024 -0.05 " rpy = "${pi/2} ${pi/2} 0 "/>
 		</collision>
@@ -161,14 +161,14 @@
 
 		<visual>
 		  	<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link5.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/link5.dae"/>
 		  	</geometry>
 		  	<origin xyz = "0.0 0 -0.05 " rpy = "0 0 ${-pi/2}"/>
 		</visual>
 
 		<collision>
 		   	<geometry>	
-		   		<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link5.dae"/>
+		   		<mesh filename="file://$(find mycobot_description)/urdf/mesh/link5.dae"/>
 		  	</geometry>
 		  	<origin xyz = "0.0 0 -0.05 " rpy = "0 0 ${-pi/2}"/>
 		</collision>
@@ -188,7 +188,7 @@
 
 		<visual>
 			<geometry>
-				<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link6.dae"/>
+				<mesh filename="file://$(find mycobot_description)/urdf/mesh/link6.dae"/>
 			</geometry>
 			<material name = "grey">
 				<color rgba = "0.5 0.5 0.5 1"/>
@@ -198,7 +198,7 @@
 
 		<collision>
 		   	<geometry>	
-		   		<mesh filename="file://$(find mycobot_description)/urdf/mycobot_320_pi_2022/link6.dae"/>
+		   		<mesh filename="file://$(find mycobot_description)/urdf/mesh/link6.dae"/>
 		  	</geometry>
 		  	<origin xyz = "0.0 0.0 -0.022 " rpy = " ${pi/2} ${pi/2} 0"/>
 		</collision>

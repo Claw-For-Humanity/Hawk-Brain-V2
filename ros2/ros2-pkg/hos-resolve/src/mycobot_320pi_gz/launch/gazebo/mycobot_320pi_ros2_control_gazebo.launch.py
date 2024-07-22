@@ -14,14 +14,14 @@ def generate_launch_description():
 ##################################### PATHS #####################################
   # Constants for paths to different files and folders
   package_name_description = 'mycobot_description'
-  package_name_mycobot = 'mycobot_320pi_moveit2'
+  package_name_mycobot = 'mycobot_320pi_gz'
 
   default_robot_name = 'mycobot_320pi'
   gazebo_models_path = 'models'
 
   ros_gz_bridge_config_file_path = 'config/ros_gz_bridge.yaml'
   rviz_config_file_path = 'config/rviz/mycobot_320_pi.rviz'
-  urdf_file_path = 'urdf/mycobot_320_pi_2022/mycobot_320_pi_moveit_2022_gz.urdf.xacro'
+  urdf_file_path = 'urdf/xacro/mycobot_320_pi_gz.urdf.xacro'
 
   # Set the path to different files and folders.  
   pkg_ros_gz_sim = FindPackageShare(package='ros_gz_sim').find('ros_gz_sim')  
@@ -234,10 +234,3 @@ def generate_launch_description():
   ld.add_action(start_gazebo_ros_bridge_cmd)
 
   return ld
-
-
-
-# once built and sourced,
-# make sure to add robot_description and set robot_description (if you don't go through this process, rviz will show nothing)
-
-# planning scene wip
