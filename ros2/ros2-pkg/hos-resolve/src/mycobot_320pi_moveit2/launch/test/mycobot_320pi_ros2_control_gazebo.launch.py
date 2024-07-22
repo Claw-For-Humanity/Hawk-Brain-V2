@@ -1,16 +1,17 @@
 import os
 from launch import LaunchDescription
-from launch.actions import AppendEnvironmentVariable, DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
-from launch.actions import RegisterEventHandler
+from launch.actions import AppendEnvironmentVariable, DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
-from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import Command, LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
-import xacro
+
 
 def generate_launch_description():
+
+##################################### PATHS #####################################
   # Constants for paths to different files and folders
   package_name_description = 'mycobot_description'
   package_name_mycobot = 'mycobot_320pi_moveit2'
@@ -18,7 +19,9 @@ def generate_launch_description():
   default_robot_name = 'mycobot_320pi'
   gazebo_launch_file_path = 'launch'
   gazebo_models_path = 'models'
-  rviz_config_file_path = 'config/moveit.rviz'
+
+  ros_gz_bridge_config_file_path = 'config/ros_gz_bridge.yaml'
+  rviz_config_file_path = 'config/mycobot_320_pi.rviz'
   urdf_file_path = 'urdf/mycobot_320_pi_2022/mycobot_320_pi_moveit_2022_gz.urdf.xacro'
   world_file_path = 'worlds/empty.world' # e.g. 'world/empty.world', 'world/house.world'
 
@@ -26,18 +29,29 @@ def generate_launch_description():
   pkg_ros_gz_sim = FindPackageShare(package='ros_gz_sim').find('ros_gz_sim')  
   pkg_share_description = FindPackageShare(package=package_name_description).find(package_name_description)
   pkg_share_mycobot = FindPackageShare(package=package_name_mycobot).find(package_name_mycobot)
+
+  
+  default_ros_gz_bridge_config_file_path = os.path.join(pkg_share_mycobot, ros_gz_bridge_config_file_path)
   default_rviz_config_path = os.path.join(package_name_mycobot, rviz_config_file_path) # under mycobot
   default_urdf_model_path = os.path.join(pkg_share_description, urdf_file_path) # under desc.
   gazebo_launch_file_path = os.path.join(pkg_share_mycobot, gazebo_launch_file_path) # what is this for?
   gazebo_models_path = os.path.join(pkg_share_mycobot, gazebo_models_path) # why we need this?
   world_path = os.path.join(pkg_share_mycobot, world_file_path) # again why we need this?
-   
+
+
+
+
+##################################### LAUNCH CONFIGs #####################################   
   # Launch configuration variables specific to simulation
+  headless = LaunchConfiguration('headless')
   robot_name = LaunchConfiguration('robot_name')
   rviz_config_file = LaunchConfiguration('rviz_config_file')
+  urdf_model = LaunchConfiguration('urdf_model')
   use_robot_state_pub = LaunchConfiguration('use_robot_state_pub')
   use_rviz = LaunchConfiguration('use_rviz')
   use_sim_time = LaunchConfiguration('use_sim_time')
+  use_simulator = LaunchConfiguration('use_simulator')
+  world = LaunchConfiguration('world')
   
   # Set the default pose
   x = LaunchConfiguration('x')
@@ -46,7 +60,11 @@ def generate_launch_description():
   roll = LaunchConfiguration('roll')
   pitch = LaunchConfiguration('pitch')
   yaw = LaunchConfiguration('yaw')
-  
+
+
+
+
+##################################### LAUNCH ARGs ##################################### 
   # Declare the launch arguments  
   declare_robot_name_cmd = DeclareLaunchArgument(
     name='robot_name',
@@ -58,6 +76,16 @@ def generate_launch_description():
     default_value=default_rviz_config_path,
     description='Full path to the RVIZ config file to use')
 
+  declare_simulator_cmd = DeclareLaunchArgument(
+    name='headless',
+    default_value='False',
+    description='Display the Gazebo GUI if False, otherwise run in headless mode')
+
+  declare_urdf_model_path_cmd = DeclareLaunchArgument(
+    name='urdf_model', 
+    default_value=default_urdf_model_path, 
+    description='Absolute path to robot urdf file')
+    
   declare_use_robot_state_pub_cmd = DeclareLaunchArgument(
     name='use_robot_state_pub',
     default_value='True',
@@ -72,6 +100,11 @@ def generate_launch_description():
     name='use_sim_time',
     default_value='true',
     description='Use simulation (Gazebo) clock if true')
+
+  declare_use_simulator_cmd = DeclareLaunchArgument(
+    name='use_simulator',
+    default_value='True',
+    description='Whether to start Gazebo')
 
   declare_world_cmd = DeclareLaunchArgument(
     name='world',
@@ -107,52 +140,33 @@ def generate_launch_description():
     name='yaw',
     default_value='0.0',
     description='yaw angle of initial orientation, radians')
-    
 
 
 
+
+##################################### ACTION ##################################### 
 
   # Specify the actions
   set_env_vars_resources = AppendEnvironmentVariable(
     'GZ_SIM_RESOURCE_PATH',
     gazebo_models_path)
-
-  # Start arm controller
-  start_arm_controller_cmd = ExecuteProcess(
-    cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-        'arm_controller'],
-        output='screen')
-
-  # Start Gazebo environment
-  start_gazebo_cmd = IncludeLaunchDescription(
+  
+  # Start Gazebo server (var world -> 'empty.sdf')
+  start_gazebo_server_cmd = IncludeLaunchDescription(
     PythonLaunchDescriptionSource(
       os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')),
-    launch_arguments=[('gz_args', [' -r -s -v4 ', 'empty.sdf'])]) # this may have to be changed to 'empty'
+    condition=IfCondition(use_simulator),
+    launch_arguments={'gz_args': ['-r -s -v4 ', 'empty.sdf'], 'on_exit_shutdown': 'true'}.items())
 
-  # Start gripper controller
-  start_gripper_controller_cmd =  ExecuteProcess(
-    cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-        'grip_controller'],
-        output='screen')
-  
-  # Launch joint state broadcaster
-  start_joint_state_broadcaster_cmd = ExecuteProcess(
-    cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-        'joint_state_broadcaster'],
-        output='screen')
+  # Start Gazebo client    
+  start_gazebo_client_cmd = IncludeLaunchDescription(
+    PythonLaunchDescriptionSource(
+      os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')),
+    launch_arguments={'gz_args': '-g -v4 '}.items(),
+    condition=IfCondition(PythonExpression([use_simulator, ' and not ', headless])))
     
-  # check if this work (our file is formatted in urdf not xacro)
   # Subscribe to the joint states of the robot, and publish the 3D pose of each link.
-  doc = xacro.parse(open(default_urdf_model_path))
-  xacro.process_doc(doc)
-  # with open(default_urdf_model_path,'r') as infp:
-  #       robot_desc = infp.read()
-
-  # robot_description = {'robot_description': robot_desc}
-
-
-
-  
+  robot_description_content = ParameterValue(Command(['xacro ', urdf_model]), value_type=str)
   start_robot_state_publisher_cmd = Node(
     condition=IfCondition(use_robot_state_pub),
     package='robot_state_publisher',
@@ -161,7 +175,7 @@ def generate_launch_description():
     output='screen',
     parameters=[{
       'use_sim_time': use_sim_time, 
-      'robot_description': doc.toxml()}])
+      'robot_description': robot_description_content}])
 
   # Launch RViz
   start_rviz_cmd = Node(
@@ -177,9 +191,8 @@ def generate_launch_description():
     package='ros_gz_sim',
     executable='create',
     arguments=[
-      '-string', doc.toxml(),
       '-name', robot_name,
-      '-allow_renaming', 'true',
+      '-topic', 'robot_description',
       '-x', x,
       '-y', y,
       '-z', z,
@@ -187,29 +200,30 @@ def generate_launch_description():
       '-P', pitch,
       '-Y', yaw
       ],
-    output='screen')
-
-  # Launch the joint state broadcaster after spawning the robot
-  load_joint_state_broadcaster_cmd = RegisterEventHandler(
-     event_handler=OnProcessExit(
-     target_action=start_gazebo_ros_spawner_cmd,
-     on_exit=[start_joint_state_broadcaster_cmd],))
-
-  # Launch the arm controller after launching the joint state broadcaster
-  load_arm_controller_cmd = RegisterEventHandler(
-    event_handler=OnProcessExit(
-    target_action=start_joint_state_broadcaster_cmd,
-    on_exit=[start_arm_controller_cmd],))
-
+    output='screen')  
+    
+  # Bridge ROS topics and Gazebo messages for establishing communication
+  start_gazebo_ros_bridge_cmd = Node(
+    package='ros_gz_bridge',
+    executable='parameter_bridge',
+    parameters=[{
+      'config_file': default_ros_gz_bridge_config_file_path,
+    }],
+    output='screen'
+  )  
+    
   # Create the launch description and populate
   ld = LaunchDescription()
 
   # Declare the launch options
   ld.add_action(declare_robot_name_cmd)
   ld.add_action(declare_rviz_config_file_cmd)
+  ld.add_action(declare_simulator_cmd)
+  ld.add_action(declare_urdf_model_path_cmd)
   ld.add_action(declare_use_robot_state_pub_cmd)  
   ld.add_action(declare_use_rviz_cmd) 
   ld.add_action(declare_use_sim_time_cmd)
+  ld.add_action(declare_use_simulator_cmd)
   ld.add_action(declare_world_cmd)
 
   ld.add_action(declare_x_cmd)
@@ -221,16 +235,13 @@ def generate_launch_description():
 
   # Add any actions
   ld.add_action(set_env_vars_resources)
-  ld.add_action(start_gazebo_cmd)
+  ld.add_action(start_gazebo_server_cmd)
+  ld.add_action(start_gazebo_client_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
   ld.add_action(start_rviz_cmd)
   
   ld.add_action(start_gazebo_ros_spawner_cmd)
-
-  ld.add_action(load_joint_state_broadcaster_cmd)
-  # ld.add_action(load_arm_controller_cmd) 
+  ld.add_action(start_gazebo_ros_bridge_cmd)
 
   return ld
-
-
 

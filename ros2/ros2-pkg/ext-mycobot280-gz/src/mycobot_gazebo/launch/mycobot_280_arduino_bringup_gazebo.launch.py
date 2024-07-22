@@ -20,6 +20,8 @@ def generate_launch_description():
   default_robot_name = 'mycobot_280'
   gazebo_launch_file_path = 'launch'
   gazebo_models_path = 'models'
+
+  
   ros_gz_bridge_config_file_path = 'config/ros_gz_bridge.yaml'
   rviz_config_file_path = 'rviz/mycobot_280_arduino_view_description.rviz'
   urdf_file_path = 'urdf/mycobot_280_gazebo.urdf.xacro' 
@@ -131,9 +133,16 @@ def generate_launch_description():
     name='yaw',
     default_value='0.0',
     description='yaw angle of initial orientation, radians')
-    
-  # Specify the actions
 
+
+
+
+
+
+
+  ##################################### ACTION ##################################### 
+  
+  # Specify the actions
   set_env_vars_resources = AppendEnvironmentVariable(
     'GZ_SIM_RESOURCE_PATH',
     gazebo_models_path)
