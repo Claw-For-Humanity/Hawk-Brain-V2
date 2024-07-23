@@ -2,11 +2,36 @@ import os
 from launch import LaunchDescription
 from launch.actions import AppendEnvironmentVariable, DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
+from ament_index_python.packages import get_package_share_directory
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
+import yaml
+
+
+
+def load_file(package_name, file_path):
+    package_path = get_package_share_directory(package_name)
+    absolute_file_path = os.path.join(package_path, file_path)
+    try:
+        with open(absolute_file_path, 'r') as file:
+            return file.read()
+    except EnvironmentError:
+        # parent of IOError, OSError *and* WindowsError where available.
+        return None
+
+# LOAD YAML:
+def load_yaml(package_name, file_path):
+    package_path = get_package_share_directory(package_name)
+    absolute_file_path = os.path.join(package_path, file_path)
+    try:
+        with open(absolute_file_path, 'r') as file:
+            return yaml.safe_load(file)
+    except EnvironmentError:
+        # parent of IOError, OSError *and* WindowsError where available.
+        return None
 
 
 def generate_launch_description():
@@ -36,6 +61,29 @@ def generate_launch_description():
   gazebo_models_path = os.path.join(pkg_share_mycobot, gazebo_models_path) # [IMPORTANT] gazebo resource path 
 
 
+  robot_description_semantic_config = load_file("mycobot_320pi_gz", "config/firefighter.srdf")
+  robot_description_semantic = {"robot_description_semantic": robot_description_semantic_config }
+
+
+
+  planning_pipelines={'planning_pipelines': ['ompl', 'chomp', 'pilz_industrial_motion_planner'], 'default_planning_pipeline': 'ompl', 'ompl': {'planner_configs': {'SBL': {'type': 'geometric::SBL', 'range': 0.0}, 'EST': {'type': 'geometric::EST', 'range': 0.0, 'goal_bias': 0.05}, 'LBKPIECE': {'type': 'geometric::LBKPIECE', 'range': 0.0, 'border_fraction': 0.9, 'min_valid_path_fraction': 0.5}, 'BKPIECE': {'type': 'geometric::BKPIECE', 'range': 0.0, 'border_fraction': 0.9, 'failed_expansion_score_factor': 0.5, 'min_valid_path_fraction': 0.5}, 'KPIECE': {'type': 'geometric::KPIECE', 'range': 0.0, 'goal_bias': 0.05, 'border_fraction': 0.9, 'failed_expansion_score_factor': 0.5, 'min_valid_path_fraction': 0.5}, 'RRT': {'type': 'geometric::RRT', 'range': 0.0, 'goal_bias': 0.05}, 'RRTConnect': {'type': 'geometric::RRTConnect', 'range': 0.0}, 'RRTstar': {'type': 'geometric::RRTstar', 'range': 0.0, 'goal_bias': 0.05, 'delay_collision_checking': 1}, 'TRRT': {'type': 'geometric::TRRT', 'range': 0.0, 'goal_bias': 0.05, 'max_states_failed': 10, 'temp_change_factor': 2.0, 'min_temperature': '10e-10', 'init_temperature': '10e-6', 'frountier_threshold': 0.0, 'frountierNodeRatio': 0.1, 'k_constant': 0.0}, 'PRM': {'type': 'geometric::PRM', 'max_nearest_neighbors': 10}, 'PRMstar': {'type': 'geometric::PRMstar'}, 'FMT': {'type': 'geometric::FMT', 'num_samples': 1000, 'radius_multiplier': 1.1, 'nearest_k': 1, 'cache_cc': 1, 'heuristics': 0, 'extended_fmt': 1}, 'BFMT': {'type': 'geometric::BFMT', 'num_samples': 1000, 'radius_multiplier': 1.0, 'nearest_k': 1, 'balanced': 0, 'optimality': 1, 'heuristics': 1, 'cache_cc': 1, 'extended_fmt': 1}, 'PDST': {'type': 'geometric::PDST'}, 'STRIDE': {'type': 'geometric::STRIDE', 'range': 0.0, 'goal_bias': 0.05, 'use_projected_distance': 0, 'degree': 16, 'max_degree': 18, 'min_degree': 12, 'max_pts_per_leaf': 6, 'estimated_dimension': 0.0, 'min_valid_path_fraction': 0.2}, 'BiTRRT': {'type': 'geometric::BiTRRT', 'range': 0.0, 'temp_change_factor': 0.1, 'init_temperature': 100, 'frountier_threshold': 0.0, 'frountier_node_ratio': 0.1, 'cost_threshold': '1e300'}, 'LBTRRT': {'type': 'geometric::LBTRRT', 'range': 0.0, 'goal_bias': 0.05, 'epsilon': 0.4}, 'BiEST': {'type': 'geometric::BiEST', 'range': 0.0}, 'ProjEST': {'type': 'geometric::ProjEST', 'range': 0.0, 'goal_bias': 0.05}, 'LazyPRM': {'type': 'geometric::LazyPRM', 'range': 0.0}, 'LazyPRMstar': {'type': 'geometric::LazyPRMstar'}, 'SPARS': {'type': 'geometric::SPARS', 'stretch_factor': 3.0, 'sparse_delta_fraction': 0.25, 'dense_delta_fraction': 0.001, 'max_failures': 1000}, 'SPARStwo': {'type': 'geometric::SPARStwo', 'stretch_factor': 3.0, 'sparse_delta_fraction': 0.25, 'dense_delta_fraction': 0.001, 'max_failures': 5000}},'arm_group': {'default_planner_config': 'None', 'planner_configs': ['SBL', 'EST', 'LBKPIECE', 'BKPIECE', 'KPIECE', 'RRT', 'RRTConnect', 'RRTstar', 'TRRT', 'PRM', 'PRMstar', 'FMT', 'BFMT', 'PDST', 'STRIDE', 'BiTRRT', 'LBTRRT', 'BiEST', 'ProjEST', 'LazyPRM', 'LazyPRMstar', 'SPARS', 'SPARStwo'], 'projection_evaluator': 'joints(joint2_to_joint1,joint3_to_joint2)', 'longest_valid_segment_fraction': 0.005}}, 'chomp': {'planning_plugin': 'chomp_interface/CHOMPPlanner', 'enable_failure_recovery': True, 'jiggle_fraction': 0.05, 'request_adapters': 'default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/ResolveConstraintFrames default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints', 'ridge_factor': 0.01, 'start_state_max_bounds_error': 0.1}, 'pilz_industrial_motion_planner': {'planning_plugin': 'pilz_industrial_motion_planner/CommandPlanner', 'request_adapters': '', 'default_planner_config': 'PTP', 'capabilities': 'pilz_industrial_motion_planner/MoveGroupSequenceAction pilz_industrial_motion_planner/MoveGroupSequenceService'}}
+  
+  kinematics_yaml = load_yaml("mycobot_320pi_gz", "config/kinematics.yaml")
+  robot_description_kinematics = {"robot_description_kinematics": kinematics_yaml}
+
+  # Move group: OMPL Planning.
+  ompl_planning_pipeline_config = {
+      "move_group": {
+          "planning_plugin": "ompl_interface/OMPLPlanner",
+          "request_adapters": """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
+          "start_state_max_bounds_error": 0.1,
+      }
+    }
+
+  ompl_planning_yaml = load_yaml("mycobot_320pi_gz", "config/ompl_planning.yaml")
+  ompl_planning_pipeline_config["move_group"].update(ompl_planning_yaml)
+
+
 
 ##################################### LAUNCH CONFIGs #####################################   
   # Launch configuration variables specific to simulation
@@ -47,7 +95,6 @@ def generate_launch_description():
   use_rviz = LaunchConfiguration('use_rviz')
   use_sim_time = LaunchConfiguration('use_sim_time')
   use_simulator = LaunchConfiguration('use_simulator')
-  world = LaunchConfiguration('world')
   
   # Set the default pose
   x = LaunchConfiguration('x')
@@ -158,6 +205,7 @@ def generate_launch_description():
     
   # Subscribe to the joint states of the robot, and publish the 3D pose of each link.
   robot_description_content = ParameterValue(Command(['xacro ', urdf_model]), value_type=str)
+  robot_description = {'robot_description': robot_description_content}
   start_robot_state_publisher_cmd = Node(
     condition=IfCondition(use_robot_state_pub),
     package='robot_state_publisher',
@@ -175,7 +223,13 @@ def generate_launch_description():
     executable='rviz2',
     name='rviz2',
     output='screen',
-    arguments=['-d', rviz_config_file])  
+    arguments=["-d", rviz_config_file],
+    parameters=[
+      robot_description,
+      robot_description_semantic,
+      ompl_planning_pipeline_config,
+      robot_description_kinematics      
+    ])  
     
   # Spawn the robot
   start_gazebo_ros_spawner_cmd = Node(
@@ -210,6 +264,8 @@ def generate_launch_description():
   ld.add_action(declare_robot_name_cmd)
   ld.add_action(declare_rviz_config_file_cmd)
   ld.add_action(declare_simulator_cmd)
+  # ld.add_action(declare_plan_pipeline_path_cmd)
+  # ld.add_action(declare_kinematics_path_cmd)
   ld.add_action(declare_urdf_model_path_cmd)
   ld.add_action(declare_use_robot_state_pub_cmd)  
   ld.add_action(declare_use_rviz_cmd) 
@@ -228,9 +284,9 @@ def generate_launch_description():
   ld.add_action(start_gazebo_server_cmd)
   ld.add_action(start_gazebo_client_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
-  ld.add_action(start_rviz_cmd)
   
   ld.add_action(start_gazebo_ros_spawner_cmd)
   ld.add_action(start_gazebo_ros_bridge_cmd)
-
+  ld.add_action(start_rviz_cmd)
+  
   return ld
