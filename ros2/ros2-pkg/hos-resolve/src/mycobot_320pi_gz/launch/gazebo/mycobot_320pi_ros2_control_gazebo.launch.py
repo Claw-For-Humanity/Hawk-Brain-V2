@@ -86,7 +86,6 @@ def generate_launch_description():
   # Launch configuration variables specific to simulation
   robot_name = LaunchConfiguration('robot_name')
   rviz_config_file = LaunchConfiguration('rviz_config_file')
-  urdf_model = LaunchConfiguration('urdf_model')
   use_robot_state_pub = LaunchConfiguration('use_robot_state_pub')
   use_rviz = LaunchConfiguration('use_rviz')
   use_sim_time = LaunchConfiguration('use_sim_time')
@@ -261,7 +260,7 @@ def generate_launch_description():
   ld.add_action(declare_z_cmd)
   ld.add_action(declare_roll_cmd)
   ld.add_action(declare_pitch_cmd)
-  ld.add_action(declare_yaw_cmd)  
+  ld.add_action(declare_yaw_cmd)
 
   # Add any actions
   ld.add_action(set_env_vars_resources)
@@ -272,6 +271,6 @@ def generate_launch_description():
   ld.add_action(start_gazebo_ros_spawner_cmd)
 
   ld.add_action(load_joint_state_broadcaster_cmd)
-  ld.add_action(load_arm_controller_cmd) 
+  ld.add_action(load_arm_controller_cmd)
   
   return ld
