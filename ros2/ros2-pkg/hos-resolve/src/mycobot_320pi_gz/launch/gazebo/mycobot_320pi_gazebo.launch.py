@@ -280,8 +280,8 @@ def generate_launch_description():
   ld.add_action(start_gazebo_client_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
   
-  ld.add_action(start_rviz_cmd)
   ld.add_action(start_gazebo_ros_spawner_cmd)
   ld.add_action(start_gazebo_ros_bridge_cmd)
+  ld.add_action(start_rviz_cmd)
   
   return ld

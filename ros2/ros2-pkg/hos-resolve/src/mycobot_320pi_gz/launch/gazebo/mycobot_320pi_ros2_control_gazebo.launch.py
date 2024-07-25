@@ -64,6 +64,9 @@ def generate_launch_description():
 
 
   # rviz params
+  controller_config = load_yaml("mycobot_320pi_gz", "config/ros2_controllers.yaml")
+
+
   robot_description_semantic_config = load_file("mycobot_320pi_gz", "config/firefighter.srdf")
   robot_description_semantic = {"robot_description_semantic": robot_description_semantic_config}
   kinematics_yaml = load_yaml("mycobot_320pi_gz", "config/kinematics.yaml")
@@ -173,6 +176,10 @@ def generate_launch_description():
     cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
         'arm_controller'],
         output='screen')
+  
+  # start_arm_controller_cmd = IncludeLaunchDescription(
+  #       PythonLaunchDescriptionSource([os.path.join(get_package_share_directory('mycobot_320pi_gz'),'launch'), '/spawn_controllers.launch.py']),
+  #       )
 
   # Start Gazebo environment
   start_gazebo_cmd = IncludeLaunchDescription(
@@ -232,6 +239,19 @@ def generate_launch_description():
       ],
     output='screen') 
   
+
+  # controller manager node?
+  load_controller_manager = Node(
+    package="controller_manager",
+    executable="ros2_control_node",
+    parameters=[
+        robot_description,
+        str(controller_config),
+      ],
+    )
+
+
+  
   # Launch the joint state broadcaster after spawning the robot
   load_joint_state_broadcaster_cmd = RegisterEventHandler(
      event_handler=OnProcessExit(
@@ -262,15 +282,22 @@ def generate_launch_description():
   ld.add_action(declare_pitch_cmd)
   ld.add_action(declare_yaw_cmd)
 
+
   # Add any actions
   ld.add_action(set_env_vars_resources)
   ld.add_action(start_gazebo_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
   ld.add_action(start_rviz_cmd)
   
+  ld.add_action(load_controller_manager)
+  
   ld.add_action(start_gazebo_ros_spawner_cmd)
 
   ld.add_action(load_joint_state_broadcaster_cmd)
+  
+  # TODO: figure out
+  
+
   ld.add_action(load_arm_controller_cmd)
   
   return ld
