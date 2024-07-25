@@ -53,11 +53,14 @@ def generate_launch_description():
   
   gazebo_models_path = 'models' # leave as is
   ros_gz_bridge_config_file_path = 'config/ros_gz_bridge.yaml'
+  controller_config_file_path = 'config/mycobot_320pi_controllers.yaml'
   rviz_config_file_path = 'config/rviz/mycobot_320_pi.rviz'
   urdf_file_path = 'urdf/xacro/mycobot_320_pi_gz.urdf.xacro'
 
 
+
   default_ros_gz_bridge_config_file_path = os.path.join(pkg_share_mycobot, ros_gz_bridge_config_file_path)
+  default_controller_config_file_path = os.path.join(pkg_share_mycobot, controller_config_file_path)
   default_rviz_config_path = os.path.join(package_name_mycobot, rviz_config_file_path) # under mycobot
   default_urdf_model_path = os.path.join(pkg_share_description, urdf_file_path) # under desc.
   gazebo_models_path = os.path.join(pkg_share_mycobot, gazebo_models_path) # [IMPORTANT] gazebo resource path 
@@ -200,9 +203,11 @@ def generate_launch_description():
     launch_arguments={'gz_args': '-g -v4 '}.items(),
     condition=IfCondition(PythonExpression([use_simulator, ' and not ', headless])))
     
-  # Subscribe to the joint states of the robot, and publish the 3D pose of each link.
+  # define robot desc.
   robot_description_content = ParameterValue(Command(['xacro ', urdf_model]), value_type=str)
   robot_description = {'robot_description': robot_description_content}
+
+  #  Subscribe to the joint states of the robot, and publish the 3D pose of each link.
   start_robot_state_publisher_cmd = Node(
     condition=IfCondition(use_robot_state_pub),
     package='robot_state_publisher',
@@ -220,10 +225,10 @@ def generate_launch_description():
     executable='rviz2',
     name='rviz2',
     output='screen',
-    arguments=["-d", rviz_config_file],
+    arguments=["-d", LaunchConfiguration("rviz_config_file")],
     parameters=[
-      robot_description,
-      robot_description_semantic,
+      # robot_description,
+      # robot_description_semantic,
       ompl_planning_pipeline_config,
       robot_description_kinematics      
     ])  
@@ -242,8 +247,25 @@ def generate_launch_description():
       '-P', pitch,
       '-Y', yaw
       ],
-    output='screen')  
-    
+    output='screen')
+  
+  # fake joint driver
+  start_controller_manager = Node(
+      package="controller_manager",
+      executable="ros2_control_node",
+      parameters=[
+          # robot_description,
+          str(default_controller_config_file_path)
+      ]
+  )
+  
+  # TODO: finish this
+  spawn_controllers =  (
+        IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([os.path.join(get_package_share_directory('mycobot_320pi_gz'),'launch'), '/spawn_controllers.launch.py']),
+        )
+    )
+
   # Bridge ROS topics and Gazebo messages for establishing communication
   start_gazebo_ros_bridge_cmd = Node(
     package='ros_gz_bridge',
@@ -279,9 +301,11 @@ def generate_launch_description():
   ld.add_action(start_gazebo_server_cmd)
   ld.add_action(start_gazebo_client_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
+  ld.add_action(start_controller_manager)
   
   ld.add_action(start_gazebo_ros_spawner_cmd)
   ld.add_action(start_gazebo_ros_bridge_cmd)
   ld.add_action(start_rviz_cmd)
+  ld.add_action(spawn_controllers)
   
   return ld
