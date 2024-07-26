@@ -1,8 +1,9 @@
 import os
 from launch import LaunchDescription
-from launch.actions import AppendEnvironmentVariable, DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import AppendEnvironmentVariable, DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, ExecuteProcess
 from launch.conditions import IfCondition
 from ament_index_python.packages import get_package_share_directory
+from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
@@ -55,14 +56,17 @@ def generate_launch_description():
   ros_gz_bridge_config_file_path = 'config/ros_gz_bridge.yaml'
   controller_config_file_path = 'config/mycobot_320pi_controllers.yaml'
   rviz_config_file_path = 'config/rviz/mycobot_320_pi.rviz'
-  urdf_file_path = 'urdf/xacro/mycobot_320_pi_gz.urdf.xacro'
+  xacro_urdf_file_path = 'urdf/xacro/mycobot_320_pi_gz.urdf.xacro'
+  urdf_file_path = 'urdf/original/mycobot_320_pi_moveit_2022_gz.urdf'
+  
 
 
 
   default_ros_gz_bridge_config_file_path = os.path.join(pkg_share_mycobot, ros_gz_bridge_config_file_path)
   default_controller_config_file_path = os.path.join(pkg_share_mycobot, controller_config_file_path)
   default_rviz_config_path = os.path.join(package_name_mycobot, rviz_config_file_path) # under mycobot
-  default_urdf_model_path = os.path.join(pkg_share_description, urdf_file_path) # under desc.
+  default_xacro_urdf_model_path = os.path.join(pkg_share_description, xacro_urdf_file_path) # under desc.
+  default_urdf_model_path = os.path.join(pkg_share_description, urdf_file_path)
   gazebo_models_path = os.path.join(pkg_share_mycobot, gazebo_models_path) # [IMPORTANT] gazebo resource path 
 
 
@@ -126,7 +130,7 @@ def generate_launch_description():
 
   declare_urdf_model_path_cmd = DeclareLaunchArgument(
     name='urdf_model', 
-    default_value=default_urdf_model_path, 
+    default_value=default_xacro_urdf_model_path, 
     description='Absolute path to robot urdf file')
     
   declare_use_robot_state_pub_cmd = DeclareLaunchArgument(
@@ -213,25 +217,26 @@ def generate_launch_description():
     package='robot_state_publisher',
     executable='robot_state_publisher',
     name='robot_state_publisher',
-    output='screen',
+    output='both',
     parameters=[{
       'use_sim_time': use_sim_time, 
       'robot_description': robot_description_content}])
 
-  # Launch RViz
+  # Launch RViz TODO: figure out what's wrong here
   start_rviz_cmd = Node(
     condition=IfCondition(use_rviz),
     package='rviz2',
     executable='rviz2',
     name='rviz2',
     output='screen',
-    arguments=["-d", LaunchConfiguration("rviz_config_file")],
-    parameters=[
-      # robot_description,
-      # robot_description_semantic,
-      ompl_planning_pipeline_config,
-      robot_description_kinematics      
-    ])  
+    arguments=["-d", rviz_config_file],
+    # parameters=[
+    #   robot_description,
+    #   robot_description_semantic,
+    #   ompl_planning_pipeline_config,
+    #   robot_description_kinematics      
+    # ]
+    )  
     
   # Spawn the robot
   start_gazebo_ros_spawner_cmd = Node(
@@ -254,17 +259,30 @@ def generate_launch_description():
       package="controller_manager",
       executable="ros2_control_node",
       parameters=[
-          # robot_description,
+          default_urdf_model_path,
           str(default_controller_config_file_path)
       ]
   )
+
+   # Start arm controller
+  start_arm_controller_cmd = ExecuteProcess(
+    cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+        'arm_controller'],
+        output='screen')
+
   
   # TODO: finish this
-  spawn_controllers =  (
-        IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([os.path.join(get_package_share_directory('mycobot_320pi_gz'),'launch'), '/spawn_controllers.launch.py']),
-        )
-    )
+  # spawn_controllers =  (
+  #       IncludeLaunchDescription(
+  #       PythonLaunchDescriptionSource([os.path.join(get_package_share_directory('mycobot_320pi_gz'),'launch'), '/spawn_controllers.launch.py']),
+  #       )
+  #   )
+
+  # Launch the arm controller after launching the joint state broadcaster
+  load_arm_controller_cmd = RegisterEventHandler(
+    event_handler=OnProcessExit(
+    target_action=start_controller_manager,
+    on_exit=[start_arm_controller_cmd],))
 
   # Bridge ROS topics and Gazebo messages for establishing communication
   start_gazebo_ros_bridge_cmd = Node(
@@ -301,11 +319,12 @@ def generate_launch_description():
   ld.add_action(start_gazebo_server_cmd)
   ld.add_action(start_gazebo_client_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
-  ld.add_action(start_controller_manager)
   
+  ld.add_action(start_rviz_cmd)
   ld.add_action(start_gazebo_ros_spawner_cmd)
   ld.add_action(start_gazebo_ros_bridge_cmd)
-  ld.add_action(start_rviz_cmd)
-  ld.add_action(spawn_controllers)
+  
+  ld.add_action(start_controller_manager)
+  ld.add_action(load_arm_controller_cmd)
   
   return ld
