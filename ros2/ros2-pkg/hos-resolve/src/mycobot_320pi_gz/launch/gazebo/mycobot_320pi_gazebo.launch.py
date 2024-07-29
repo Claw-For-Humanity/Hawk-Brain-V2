@@ -9,6 +9,10 @@ from launch.substitutions import Command, LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
+from moveit_configs_utils.launch_utils import (
+    add_debuggable_node,
+    DeclareBooleanLaunchArg,
+)
 import yaml
 
 
@@ -55,7 +59,7 @@ def generate_launch_description():
   gazebo_models_path = 'models' # leave as is
   ros_gz_bridge_config_file_path = 'config/ros_gz_bridge.yaml'
   controller_config_file_path = 'config/mycobot_320pi_controllers.yaml'
-  rviz_config_file_path = 'config/rviz/mycobot_320_pi.rviz'
+  rviz_config_file_path = 'config/rviz/moveit.rviz'
   xacro_urdf_file_path = 'urdf/xacro/mycobot_320_pi_gz.urdf.xacro'
   urdf_file_path = 'urdf/original/mycobot_320_pi_moveit_2022_gz.urdf'
   
@@ -64,7 +68,7 @@ def generate_launch_description():
 
   default_ros_gz_bridge_config_file_path = os.path.join(pkg_share_mycobot, ros_gz_bridge_config_file_path)
   default_controller_config_file_path = os.path.join(pkg_share_mycobot, controller_config_file_path)
-  default_rviz_config_path = os.path.join(package_name_mycobot, rviz_config_file_path) # under mycobot
+  default_rviz_config_path = os.path.join(pkg_share_mycobot, rviz_config_file_path) # under mycobot
   default_xacro_urdf_model_path = os.path.join(pkg_share_description, xacro_urdf_file_path) # under desc.
   default_urdf_model_path = os.path.join(pkg_share_description, urdf_file_path)
   gazebo_models_path = os.path.join(pkg_share_mycobot, gazebo_models_path) # [IMPORTANT] gazebo resource path 
@@ -85,7 +89,8 @@ def generate_launch_description():
 
   ompl_planning_yaml = load_yaml("mycobot_320pi_gz", "config/ompl_planning.yaml")
   ompl_planning_pipeline_config["move_group"].update(ompl_planning_yaml)
-  # planning_pipelines={'planning_pipelines': ['ompl', 'chomp', 'pilz_industrial_motion_planner'], 'default_planning_pipeline': 'ompl', 'ompl': {'planner_configs': {'SBL': {'type': 'geometric::SBL', 'range': 0.0}, 'EST': {'type': 'geometric::EST', 'range': 0.0, 'goal_bias': 0.05}, 'LBKPIECE': {'type': 'geometric::LBKPIECE', 'range': 0.0, 'border_fraction': 0.9, 'min_valid_path_fraction': 0.5}, 'BKPIECE': {'type': 'geometric::BKPIECE', 'range': 0.0, 'border_fraction': 0.9, 'failed_expansion_score_factor': 0.5, 'min_valid_path_fraction': 0.5}, 'KPIECE': {'type': 'geometric::KPIECE', 'range': 0.0, 'goal_bias': 0.05, 'border_fraction': 0.9, 'failed_expansion_score_factor': 0.5, 'min_valid_path_fraction': 0.5}, 'RRT': {'type': 'geometric::RRT', 'range': 0.0, 'goal_bias': 0.05}, 'RRTConnect': {'type': 'geometric::RRTConnect', 'range': 0.0}, 'RRTstar': {'type': 'geometric::RRTstar', 'range': 0.0, 'goal_bias': 0.05, 'delay_collision_checking': 1}, 'TRRT': {'type': 'geometric::TRRT', 'range': 0.0, 'goal_bias': 0.05, 'max_states_failed': 10, 'temp_change_factor': 2.0, 'min_temperature': '10e-10', 'init_temperature': '10e-6', 'frountier_threshold': 0.0, 'frountierNodeRatio': 0.1, 'k_constant': 0.0}, 'PRM': {'type': 'geometric::PRM', 'max_nearest_neighbors': 10}, 'PRMstar': {'type': 'geometric::PRMstar'}, 'FMT': {'type': 'geometric::FMT', 'num_samples': 1000, 'radius_multiplier': 1.1, 'nearest_k': 1, 'cache_cc': 1, 'heuristics': 0, 'extended_fmt': 1}, 'BFMT': {'type': 'geometric::BFMT', 'num_samples': 1000, 'radius_multiplier': 1.0, 'nearest_k': 1, 'balanced': 0, 'optimality': 1, 'heuristics': 1, 'cache_cc': 1, 'extended_fmt': 1}, 'PDST': {'type': 'geometric::PDST'}, 'STRIDE': {'type': 'geometric::STRIDE', 'range': 0.0, 'goal_bias': 0.05, 'use_projected_distance': 0, 'degree': 16, 'max_degree': 18, 'min_degree': 12, 'max_pts_per_leaf': 6, 'estimated_dimension': 0.0, 'min_valid_path_fraction': 0.2}, 'BiTRRT': {'type': 'geometric::BiTRRT', 'range': 0.0, 'temp_change_factor': 0.1, 'init_temperature': 100, 'frountier_threshold': 0.0, 'frountier_node_ratio': 0.1, 'cost_threshold': '1e300'}, 'LBTRRT': {'type': 'geometric::LBTRRT', 'range': 0.0, 'goal_bias': 0.05, 'epsilon': 0.4}, 'BiEST': {'type': 'geometric::BiEST', 'range': 0.0}, 'ProjEST': {'type': 'geometric::ProjEST', 'range': 0.0, 'goal_bias': 0.05}, 'LazyPRM': {'type': 'geometric::LazyPRM', 'range': 0.0}, 'LazyPRMstar': {'type': 'geometric::LazyPRMstar'}, 'SPARS': {'type': 'geometric::SPARS', 'stretch_factor': 3.0, 'sparse_delta_fraction': 0.25, 'dense_delta_fraction': 0.001, 'max_failures': 1000}, 'SPARStwo': {'type': 'geometric::SPARStwo', 'stretch_factor': 3.0, 'sparse_delta_fraction': 0.25, 'dense_delta_fraction': 0.001, 'max_failures': 5000}},'arm_group': {'default_planner_config': 'None', 'planner_configs': ['SBL', 'EST', 'LBKPIECE', 'BKPIECE', 'KPIECE', 'RRT', 'RRTConnect', 'RRTstar', 'TRRT', 'PRM', 'PRMstar', 'FMT', 'BFMT', 'PDST', 'STRIDE', 'BiTRRT', 'LBTRRT', 'BiEST', 'ProjEST', 'LazyPRM', 'LazyPRMstar', 'SPARS', 'SPARStwo'], 'projection_evaluator': 'joints(joint2_to_joint1,joint3_to_joint2)', 'longest_valid_segment_fraction': 0.005}}, 'chomp': {'planning_plugin': 'chomp_interface/CHOMPPlanner', 'enable_failure_recovery': True, 'jiggle_fraction': 0.05, 'request_adapters': 'default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/ResolveConstraintFrames default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints', 'ridge_factor': 0.01, 'start_state_max_bounds_error': 0.1}, 'pilz_industrial_motion_planner': {'planning_plugin': 'pilz_industrial_motion_planner/CommandPlanner', 'request_adapters': '', 'default_planner_config': 'PTP', 'capabilities': 'pilz_industrial_motion_planner/MoveGroupSequenceAction pilz_industrial_motion_planner/MoveGroupSequenceService'}}
+  
+  planning_pipelines={'planning_pipelines': ['ompl', 'chomp', 'pilz_industrial_motion_planner'], 'default_planning_pipeline': 'ompl', 'ompl': {'planner_configs': {'SBL': {'type': 'geometric::SBL', 'range': 0.0}, 'EST': {'type': 'geometric::EST', 'range': 0.0, 'goal_bias': 0.05}, 'LBKPIECE': {'type': 'geometric::LBKPIECE', 'range': 0.0, 'border_fraction': 0.9, 'min_valid_path_fraction': 0.5}, 'BKPIECE': {'type': 'geometric::BKPIECE', 'range': 0.0, 'border_fraction': 0.9, 'failed_expansion_score_factor': 0.5, 'min_valid_path_fraction': 0.5}, 'KPIECE': {'type': 'geometric::KPIECE', 'range': 0.0, 'goal_bias': 0.05, 'border_fraction': 0.9, 'failed_expansion_score_factor': 0.5, 'min_valid_path_fraction': 0.5}, 'RRT': {'type': 'geometric::RRT', 'range': 0.0, 'goal_bias': 0.05}, 'RRTConnect': {'type': 'geometric::RRTConnect', 'range': 0.0}, 'RRTstar': {'type': 'geometric::RRTstar', 'range': 0.0, 'goal_bias': 0.05, 'delay_collision_checking': 1}, 'TRRT': {'type': 'geometric::TRRT', 'range': 0.0, 'goal_bias': 0.05, 'max_states_failed': 10, 'temp_change_factor': 2.0, 'min_temperature': '10e-10', 'init_temperature': '10e-6', 'frountier_threshold': 0.0, 'frountierNodeRatio': 0.1, 'k_constant': 0.0}, 'PRM': {'type': 'geometric::PRM', 'max_nearest_neighbors': 10}, 'PRMstar': {'type': 'geometric::PRMstar'}, 'FMT': {'type': 'geometric::FMT', 'num_samples': 1000, 'radius_multiplier': 1.1, 'nearest_k': 1, 'cache_cc': 1, 'heuristics': 0, 'extended_fmt': 1}, 'BFMT': {'type': 'geometric::BFMT', 'num_samples': 1000, 'radius_multiplier': 1.0, 'nearest_k': 1, 'balanced': 0, 'optimality': 1, 'heuristics': 1, 'cache_cc': 1, 'extended_fmt': 1}, 'PDST': {'type': 'geometric::PDST'}, 'STRIDE': {'type': 'geometric::STRIDE', 'range': 0.0, 'goal_bias': 0.05, 'use_projected_distance': 0, 'degree': 16, 'max_degree': 18, 'min_degree': 12, 'max_pts_per_leaf': 6, 'estimated_dimension': 0.0, 'min_valid_path_fraction': 0.2}, 'BiTRRT': {'type': 'geometric::BiTRRT', 'range': 0.0, 'temp_change_factor': 0.1, 'init_temperature': 100, 'frountier_threshold': 0.0, 'frountier_node_ratio': 0.1, 'cost_threshold': '1e300'}, 'LBTRRT': {'type': 'geometric::LBTRRT', 'range': 0.0, 'goal_bias': 0.05, 'epsilon': 0.4}, 'BiEST': {'type': 'geometric::BiEST', 'range': 0.0}, 'ProjEST': {'type': 'geometric::ProjEST', 'range': 0.0, 'goal_bias': 0.05}, 'LazyPRM': {'type': 'geometric::LazyPRM', 'range': 0.0}, 'LazyPRMstar': {'type': 'geometric::LazyPRMstar'}, 'SPARS': {'type': 'geometric::SPARS', 'stretch_factor': 3.0, 'sparse_delta_fraction': 0.25, 'dense_delta_fraction': 0.001, 'max_failures': 1000}, 'SPARStwo': {'type': 'geometric::SPARStwo', 'stretch_factor': 3.0, 'sparse_delta_fraction': 0.25, 'dense_delta_fraction': 0.001, 'max_failures': 5000}},'arm_group': {'default_planner_config': 'None', 'planner_configs': ['SBL', 'EST', 'LBKPIECE', 'BKPIECE', 'KPIECE', 'RRT', 'RRTConnect', 'RRTstar', 'TRRT', 'PRM', 'PRMstar', 'FMT', 'BFMT', 'PDST', 'STRIDE', 'BiTRRT', 'LBTRRT', 'BiEST', 'ProjEST', 'LazyPRM', 'LazyPRMstar', 'SPARS', 'SPARStwo'], 'projection_evaluator': 'joints(joint2_to_joint1,joint3_to_joint2)', 'longest_valid_segment_fraction': 0.005}}, 'chomp': {'planning_plugin': 'chomp_interface/CHOMPPlanner', 'enable_failure_recovery': True, 'jiggle_fraction': 0.05, 'request_adapters': 'default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/ResolveConstraintFrames default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints', 'ridge_factor': 0.01, 'start_state_max_bounds_error': 0.1}, 'pilz_industrial_motion_planner': {'planning_plugin': 'pilz_industrial_motion_planner/CommandPlanner', 'request_adapters': '', 'default_planner_config': 'PTP', 'capabilities': 'pilz_industrial_motion_planner/MoveGroupSequenceAction pilz_industrial_motion_planner/MoveGroupSequenceService'}}
 
 
 
@@ -107,6 +112,10 @@ def generate_launch_description():
   roll = LaunchConfiguration('roll')
   pitch = LaunchConfiguration('pitch')
   yaw = LaunchConfiguration('yaw')
+
+  # for movegroup
+  should_publish = LaunchConfiguration("publish_monitored_planning_scene")
+  monitor_dynamics = LaunchConfiguration("monitor_dynamics")
 
 
 
@@ -182,8 +191,52 @@ def generate_launch_description():
     name='yaw',
     default_value='0.0',
     description='yaw angle of initial orientation, radians')
+  
+  # from here is for launch_move_group FIXME
+  declare_debug_cmd = DeclareBooleanLaunchArg(
+    "debug",
+    default_value=False)
+  
+  declare_allow_trajectory_execution_cmd = DeclareBooleanLaunchArg(
+    "allow_trajectory_execution",
+   default_value=True)
+
+  declare_publish_monitored_planning_scene_cmd = DeclareBooleanLaunchArg(
+      "publish_monitored_planning_scene",
+      default_value=True)
+
+  declare_capabilities_cmd = DeclareLaunchArgument(
+    "capabilities",
+    default_value="")
+
+  declare_disable_capabilities_cmd = DeclareLaunchArgument(
+    "disable_capabilities",
+    default_value="")
+
+  declare_monitor_dynamics_cmd = DeclareBooleanLaunchArg(
+    "monitor_dynamics",
+    default_value=False)
 
 
+##################################### CONFIGS ##################################### 
+  move_group_configuration = {
+        "publish_robot_description_semantic": True,
+        "allow_trajectory_execution": LaunchConfiguration("allow_trajectory_execution"),
+        # Note: Wrapping the following values is necessary so that the parameter value can be the empty string
+        "capabilities": ParameterValue(
+            LaunchConfiguration("capabilities"), value_type=str
+        ),
+        "disable_capabilities": ParameterValue(
+            LaunchConfiguration("disable_capabilities"), value_type=str
+        ),
+        # Publish the planning scene of the physical robot so that rviz plugin can know actual robot
+        "publish_planning_scene": should_publish,
+        "publish_geometry_updates": should_publish,
+        "publish_state_updates": should_publish,
+        "publish_transforms_updates": should_publish,
+        "monitor_dynamics": monitor_dynamics, # (if) FIXME: set this to False
+        "use_sim_time": use_sim_time,
+    }
 
 
 ##################################### ACTION ##################################### 
@@ -222,6 +275,9 @@ def generate_launch_description():
       'use_sim_time': use_sim_time, 
       'robot_description': robot_description_content}])
 
+  
+  # IMPORTANT: make sure to input robot description or it will fail to read.
+
   # Launch RViz TODO: figure out what's wrong here
   start_rviz_cmd = Node(
     condition=IfCondition(use_rviz),
@@ -230,12 +286,12 @@ def generate_launch_description():
     name='rviz2',
     output='screen',
     arguments=["-d", rviz_config_file],
-    # parameters=[
-    #   robot_description,
-    #   robot_description_semantic,
-    #   ompl_planning_pipeline_config,
-    #   robot_description_kinematics      
-    # ]
+    parameters=[
+      robot_description,
+      robot_description_semantic,
+      robot_description_kinematics,
+      planning_pipelines # or planning_pipelines      
+      ] 
     )  
     
   # Spawn the robot
@@ -271,18 +327,45 @@ def generate_launch_description():
         output='screen')
 
   
-  # TODO: finish this
+  # TODO: finish this (not even sure if we need this or not)
   # spawn_controllers =  (
   #       IncludeLaunchDescription(
   #       PythonLaunchDescriptionSource([os.path.join(get_package_share_directory('mycobot_320pi_gz'),'launch'), '/spawn_controllers.launch.py']),
   #       )
   #   )
 
+
+  start_move_group = Node(
+      package="moveit_ros_move_group",
+      executable="move_group",
+      # commands_file=str(moveit_config.package_path / "launch" / "gdb_settings.gdb"), # im not sure if this exists in our package
+      output="screen",
+      parameters=[
+        robot_description, # originally. moveit_config.to_dict()
+        robot_description_semantic,
+        robot_description_kinematics,
+        ompl_planning_yaml,
+        move_group_configuration 
+        ],
+      # extra_debug_args=["--debug"],
+      # Set the display variable, in case OpenGL code is used internally
+      # additional_env={"DISPLAY": ":0"}
+  )
+
+
+
   # Launch the arm controller after launching the joint state broadcaster
   load_arm_controller_cmd = RegisterEventHandler(
     event_handler=OnProcessExit(
     target_action=start_controller_manager,
     on_exit=[start_arm_controller_cmd],))
+  
+  load_move_group_cmd = RegisterEventHandler(
+      event_handler=OnProcessExit(
+          target_action=start_move_group,
+          on_exit=[start_rviz_cmd]
+      )
+  )
 
   # Bridge ROS topics and Gazebo messages for establishing communication
   start_gazebo_ros_bridge_cmd = Node(
@@ -312,19 +395,29 @@ def generate_launch_description():
   ld.add_action(declare_z_cmd)
   ld.add_action(declare_roll_cmd)
   ld.add_action(declare_pitch_cmd)
-  ld.add_action(declare_yaw_cmd)  
+  ld.add_action(declare_yaw_cmd) 
+  ld.add_action(declare_debug_cmd)
+  ld.add_action(declare_allow_trajectory_execution_cmd)
+  ld.add_action(declare_publish_monitored_planning_scene_cmd)
+  ld.add_action(declare_capabilities_cmd)
+  ld.add_action(declare_disable_capabilities_cmd)
+  ld.add_action(declare_monitor_dynamics_cmd)
 
   # Add any actions
   ld.add_action(set_env_vars_resources)
+  ld.add_action(start_move_group)
   ld.add_action(start_gazebo_server_cmd)
   ld.add_action(start_gazebo_client_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
+  ld.add_action(load_move_group_cmd)
+
   
   ld.add_action(start_rviz_cmd)
+  
   ld.add_action(start_gazebo_ros_spawner_cmd)
   ld.add_action(start_gazebo_ros_bridge_cmd)
   
   ld.add_action(start_controller_manager)
-  ld.add_action(load_arm_controller_cmd)
+  # ld.add_action(load_arm_controller_cmd)
   
   return ld

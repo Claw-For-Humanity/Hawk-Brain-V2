@@ -1,7 +1,7 @@
 moveit_setup_assistant_config:
   urdf:
     package: mycobot_description
-    relative_path: urdf/mycobot_320_pi_2022/mycobot_320_pi_moveit_2022.urdf
+    relative_path: urdf/original/mycobot_320_pi_moveit_2022.urdf
   srdf:
     relative_path: config/firefighter.srdf
   package_settings:
