@@ -60,7 +60,7 @@ def generate_launch_description():
   ros_gz_bridge_config_file_path = 'config/ros_gz_bridge.yaml'
   controller_config_file_path = 'config/mycobot_320pi_controllers.yaml'
   rviz_config_file_path = 'config/rviz/moveit.rviz'
-  xacro_urdf_file_path = 'urdf/xacro/mycobot_320_pi_gz.urdf.xacro'
+  xacro_urdf_file_path = 'urdf/xacro/mycobot_320_pi_gz.urdf_v2.xacro'
   urdf_file_path = 'urdf/original/mycobot_320_pi_moveit_2022_gz.urdf'
   
 
