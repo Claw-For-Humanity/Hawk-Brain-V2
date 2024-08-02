@@ -154,7 +154,7 @@ def generate_launch_description():
     
   declare_use_sim_time_cmd = DeclareLaunchArgument(
     name='use_sim_time',
-    default_value='true',
+    default_value='True',
     description='Use simulation (Gazebo) clock if true')
 
   declare_use_simulator_cmd = DeclareLaunchArgument(
@@ -241,6 +241,8 @@ def generate_launch_description():
 
 ##################################### ACTION ##################################### 
 
+  sim_time = {'use_sim_time': use_sim_time}
+
   # Specify the actions
   set_env_vars_resources = AppendEnvironmentVariable(
     'GZ_SIM_RESOURCE_PATH',
@@ -290,6 +292,7 @@ def generate_launch_description():
       robot_description,
       robot_description_semantic,
       robot_description_kinematics,
+      sim_time,
       planning_pipelines # or planning_pipelines      
       ] 
     )  
@@ -328,11 +331,12 @@ def generate_launch_description():
 
   
   # TODO: finish this (not even sure if we need this or not)
-  # spawn_controllers =  (
-  #       IncludeLaunchDescription(
-  #       PythonLaunchDescriptionSource([os.path.join(get_package_share_directory('mycobot_320pi_gz'),'launch'), '/spawn_controllers.launch.py']),
-  #       )
-  #   )
+  spawn_controllers =  (
+        IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [os.path.join(get_package_share_directory('mycobot_320pi_gz'),'launch'), '/spawn_controllers.launch.py']),
+        )
+    )
 
 
   start_move_group = Node(
@@ -345,6 +349,7 @@ def generate_launch_description():
         robot_description_semantic,
         robot_description_kinematics,
         ompl_planning_yaml,
+        sim_time,
         move_group_configuration 
         ],
       # extra_debug_args=["--debug"],
@@ -375,7 +380,7 @@ def generate_launch_description():
       'config_file': default_ros_gz_bridge_config_file_path,
     }],
     output='screen'
-  )  
+  )
     
   # Create the launch description and populate
   ld = LaunchDescription()
@@ -410,6 +415,8 @@ def generate_launch_description():
   ld.add_action(start_gazebo_client_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
   ld.add_action(load_move_group_cmd)
+  
+  
 
   
   ld.add_action(start_rviz_cmd)
@@ -418,6 +425,9 @@ def generate_launch_description():
   ld.add_action(start_gazebo_ros_bridge_cmd)
   
   ld.add_action(start_controller_manager)
-  # ld.add_action(load_arm_controller_cmd)
-  
+  ld.add_action(start_arm_controller_cmd)
+  ld.add_action(load_arm_controller_cmd) # FIXME: same reason, controller_manager is not being started properly.
+  # ld.add_action(spawn_controllers) # FIXME: this is for some reason not working.
+
+
   return ld
