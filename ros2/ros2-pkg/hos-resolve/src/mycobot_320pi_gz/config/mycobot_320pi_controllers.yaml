@@ -42,3 +42,4 @@ arm_controller:
     # numerically integrate the positions to compute the velocities and accelerations required 
     # to follow the trajectory.
     allow_integration_in_goal_trajectories: true
+

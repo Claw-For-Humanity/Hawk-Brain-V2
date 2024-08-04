@@ -64,7 +64,7 @@ def generate_launch_description():
 
 
   # rviz params
-  controller_config = load_yaml("mycobot_320pi_gz", "config/ros2_controllers.yaml")
+  controller_config = load_yaml("mycobot_320pi_gz", "config/mycobot_320pi_controllers.yaml")
 
 
   robot_description_semantic_config = load_file("mycobot_320pi_gz", "config/firefighter.srdf")
@@ -283,17 +283,19 @@ def generate_launch_description():
   ld.add_action(declare_yaw_cmd)
 
 
-  # Add any actions
+  # default
   ld.add_action(set_env_vars_resources)
   ld.add_action(start_gazebo_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
-  ld.add_action(start_rviz_cmd)
-  
-  ld.add_action(load_controller_manager)
-  
+  ld.add_action(start_rviz_cmd)  
   ld.add_action(start_gazebo_ros_spawner_cmd)
 
+  # edited
+  # orig: joint state -> arm controller -> gripper controller
   ld.add_action(load_joint_state_broadcaster_cmd)
+
+  # ld.add_action(load_controller_manager)
+  
   
   # TODO: figure out
   

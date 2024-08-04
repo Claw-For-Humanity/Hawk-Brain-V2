@@ -3,7 +3,7 @@
 
 	<link name="world"/>
 
-	<xacro:property name="effort" value="5.0"/> <!-- TODO: effort is 1000.00?? -->
+	<xacro:property name="effort" value="1000.0"/> 
 	<xacro:property name="velocity" value="2.792527"/>
 	
 	<link name="base">
@@ -29,7 +29,6 @@
 		</collision>
 	</link>
 
-	<!--Define the first link of the robotic arm. Each link represents a solid part of the robot.--> 
 	<link name="link1">
 		<inertial>
 			<origin xyz="0 0 0.0" rpy="0 0 0"/>
@@ -53,7 +52,6 @@
 		</collision>
 	</link>
 	
-	<!-- Define the second link of the robotic arm, and so on.-->
 	<link name="link2">
 		<inertial>
 			<origin xyz="0 0 0.0" rpy="0 0 0"/>
@@ -197,9 +195,7 @@
         <material>Gazebo/White</material>
     </gazebo>
   
-	<!-- ********** JOINTS ********** -->
-	
-	<!-- Attach the robot base to the world frame with no initial offset or rotation. -->
+  
 	<joint name="virtual_joint" type="fixed">
 		<parent link="world"/>
 		<child link="base"/>
