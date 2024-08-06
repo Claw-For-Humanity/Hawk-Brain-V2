@@ -10,7 +10,6 @@ from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 from moveit_configs_utils.launch_utils import (
-    add_debuggable_node,
     DeclareBooleanLaunchArg,
 )
 import yaml
