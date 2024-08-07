@@ -1,7 +1,6 @@
-# controller_manager provides the necessary infrastructure to manage multiple controllers efficiently and robustly using ROS 2 Control.
 controller_manager:
   ros__parameters:
-    update_rate: 50 # update_rate specifies how often (in Hz) the controllers should be updated.
+    update_rate: 500 # update_rate specifies how often (in Hz) the controllers should be updated.
 
     # The JointTrajectoryController allows you to send joint trajectory commands to a group 
     # of joints on a robot. These commands specify the desired positions for each joint.     
@@ -13,7 +12,6 @@ controller_manager:
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-# Define the parameters for each controller
 arm_controller:
   ros__parameters:
     joints:

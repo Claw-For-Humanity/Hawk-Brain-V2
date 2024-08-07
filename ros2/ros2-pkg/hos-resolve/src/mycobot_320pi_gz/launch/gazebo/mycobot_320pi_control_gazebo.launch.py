@@ -243,11 +243,20 @@ def generate_launch_description():
         output='screen')
 
 
-  # Launch joint state broadcaster
-  start_joint_state_broadcaster_cmd = ExecuteProcess(
-    cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-        'joint_state_broadcaster'],
-        output='screen')
+  # Launch joint state broadcaster NOTE: default
+  # start_joint_state_broadcaster_cmd = ExecuteProcess(
+  #   cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+  #       'joint_state_broadcaster'],
+  #       output='screen')
+  
+  # Launch joint state broadcaster NOTE: from ur
+  start_joint_state_broadcaster_cmd = Node(
+      package="controller_manager",
+      executable="spawner",
+      arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+  )
+
+
 
   start_controller_manager = Node(
       package="controller_manager",
@@ -351,7 +360,7 @@ def generate_launch_description():
 
 
 
-# load functions
+# delayed load functions
   # MOVE GROUP NOTE: we probably don't need this
   # load_move_group_cmd = RegisterEventHandler(
   #     event_handler=OnProcessExit(
@@ -359,6 +368,14 @@ def generate_launch_description():
   #         on_exit=[start_move_group]
   #     )
   # )
+
+  delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=start_joint_state_broadcaster_cmd,
+            on_exit=[start_rviz_cmd],
+        ),
+        condition=IfCondition(use_rviz),
+    )
 
   # BROADCASTER
   load_joint_state_broadcaster_cmd = RegisterEventHandler(
@@ -416,15 +433,16 @@ def generate_launch_description():
   ld.add_action(start_robot_state_publisher_cmd)
   
   ld.add_action(start_move_group)
-  ld.add_action(start_rviz_cmd)
+  ld.add_action(start_joint_state_broadcaster_cmd)
+  ld.add_action(delay_rviz_after_joint_state_broadcaster_spawner)
   ld.add_action(start_gazebo_ros_spawner_cmd)
   ld.add_action(start_controller_manager)
 
 
   # orig: joint_state -> arm_controller 
   # not working for some reason.
-  ld.add_action(load_joint_state_broadcaster_cmd)
-  ld.add_action(load_arm_controller_cmd)
+  # ld.add_action(start_joint_state_broadcaster_cmd)
+  ld.add_action(start_arm_controller_cmd)
 
 
   return ld
