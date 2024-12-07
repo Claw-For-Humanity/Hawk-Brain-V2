@@ -3,7 +3,8 @@ moveit_setup_assistant_config:
     package: mycobot_description
     relative_path: urdf/original/mycobot_320_pi_moveit_2022.urdf
   srdf:
-    relative_path: config/firefighter.srdf
+    package: mycobot_description
+    relative_path: config/mycobot.srdf
   package_settings:
     author_name: Eric
     author_email: ceo.ekang@clawforhumanity.ca

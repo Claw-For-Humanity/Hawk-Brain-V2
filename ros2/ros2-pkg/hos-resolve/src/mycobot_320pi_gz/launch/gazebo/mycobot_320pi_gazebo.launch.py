@@ -57,7 +57,7 @@ def generate_launch_description():
   
   gazebo_models_path = 'models' # leave as is
   ros_gz_bridge_config_file_path = 'config/ros_gz_bridge.yaml'
-  controller_config_file_path = 'config/mycobot_320pi_controllers.yaml'
+  controller_config_file_path = 'config/ros2_controllers.yaml'
   rviz_config_file_path = 'config/rviz/moveit.rviz'
   xacro_urdf_file_path = 'urdf/xacro/mycobot_320_pi_gz.urdf_v2.xacro'
   urdf_file_path = 'urdf/original/mycobot_320_pi_moveit_2022_gz.urdf'
@@ -70,6 +70,7 @@ def generate_launch_description():
   default_rviz_config_path = os.path.join(pkg_share_mycobot, rviz_config_file_path) # under mycobot
   default_xacro_urdf_model_path = os.path.join(pkg_share_description, xacro_urdf_file_path) # under desc.
   default_urdf_model_path = os.path.join(pkg_share_description, urdf_file_path) # NOTE; only for controller manager
+  print('\n\n[DEBUGGING] urdf_model_path is {}\n\n'.format(default_urdf_model_path))
   gazebo_models_path = os.path.join(pkg_share_mycobot, gazebo_models_path) # [IMPORTANT] gazebo resource path 
 
 
@@ -318,11 +319,11 @@ def generate_launch_description():
       executable="ros2_control_node",
       parameters=[
           default_urdf_model_path,
-          default_controller_config_file_path
+          default_controller_config_file_path,
       ]
   )
 
-   # Start arm controller
+   # Start arm controller -- default is ros2_controllers.yaml
   start_arm_controller_cmd = ExecuteProcess(
     cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
         'arm_controller'],
@@ -356,6 +357,19 @@ def generate_launch_description():
       # additional_env={"DISPLAY": ":0"}
   )
 
+    # Joint State Broadcaster
+  joint_state_broadcaster = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+             'joint_state_broadcaster'],
+        output='screen'
+    )
+
+    # Joint Trajectory Controller
+  joint_arm_position_controller = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+             'joint_arm_position_controller'],
+        output='screen'
+    )
 
 
   # Launch the arm controller after launching the joint state broadcaster
@@ -410,9 +424,9 @@ def generate_launch_description():
   # Add any actions
   ld.add_action(set_env_vars_resources)
   ld.add_action(start_move_group)
+  ld.add_action(start_robot_state_publisher_cmd)
   ld.add_action(start_gazebo_server_cmd)
   ld.add_action(start_gazebo_client_cmd)
-  ld.add_action(start_robot_state_publisher_cmd)
   ld.add_action(load_move_group_cmd)
   
   ld.add_action(start_rviz_cmd)

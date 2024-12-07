@@ -1,11 +1,11 @@
 import os
 from launch import LaunchDescription
 from launch.actions import AppendEnvironmentVariable, DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, ExecuteProcess
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition, UnlessCondition
 from ament_index_python.packages import get_package_share_directory
 from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, LaunchConfiguration, PythonExpression
+from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution, FindExecutable
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
@@ -17,7 +17,6 @@ import yaml
 
 
 ##################################### LOADING FUNCTIONS #####################################
-# load file
 def load_file(package_name, file_path):
     package_path = get_package_share_directory(package_name)
     absolute_file_path = os.path.join(package_path, file_path)
@@ -28,7 +27,6 @@ def load_file(package_name, file_path):
         # parent of IOError, OSError *and* WindowsError where available.
         return None
 
-# load yaml
 def load_yaml(package_name, file_path):
     package_path = get_package_share_directory(package_name)
     absolute_file_path = os.path.join(package_path, file_path)
@@ -69,7 +67,6 @@ def generate_launch_description():
   gazebo_launch_file_path = os.path.join(pkg_share_mycobot, gazebo_launch_file_path)   
 
 
-  # rviz params
   robot_description_semantic_config = load_file("mycobot_320pi_gz", "config/firefighter.srdf")
   robot_description_semantic = {"robot_description_semantic": robot_description_semantic_config}
   kinematics_yaml = load_yaml("mycobot_320pi_gz", "config/kinematics.yaml")
@@ -106,11 +103,23 @@ def generate_launch_description():
   pitch = LaunchConfiguration('pitch')
   yaw = LaunchConfiguration('yaw')
 
-  # for movegroup (TODO: implement movegroup later.)
+  # movegroup
   should_publish = LaunchConfiguration("publish_monitored_planning_scene")
   monitor_dynamics = LaunchConfiguration("monitor_dynamics")
 
+  runtime_config_package = LaunchConfiguration("runtime_config_package")
+  controllers_file = LaunchConfiguration("controllers_file")
 
+
+  #this is from UR TODO: figure out what happens here
+  initial_joint_controllers = PathJoinSubstitution(
+        [FindPackageShare(runtime_config_package), "config", controllers_file]
+    )
+  
+  start_joint_controller = LaunchConfiguration("start_joint_controller")
+  initial_joint_controller = LaunchConfiguration("initial_joint_controller")
+
+  description_package = LaunchConfiguration("description_package")
 
 
 ##################################### LAUNCH ARGs ##################################### 
@@ -180,7 +189,7 @@ def generate_launch_description():
     default_value='0.0',
     description='yaw angle of initial orientation, radians')
   
-  # from here is for launch_move_group NOTE: work on movegroup later.
+  # for move group
   declare_debug_cmd = DeclareBooleanLaunchArg(
     "debug",
     default_value=False)
@@ -204,10 +213,36 @@ def generate_launch_description():
   declare_monitor_dynamics_cmd = DeclareBooleanLaunchArg(
     "monitor_dynamics",
     default_value=False)
+  
+  #TODO: modify here
+  declare_controller_file_cmd = DeclareLaunchArgument(
+            "controllers_file",
+            default_value="ur_controllers.yaml",
+            description="YAML file with the controllers configuration.",
+        )
+
+  declare_runtime_config_pkg_cmd = DeclareLaunchArgument(
+            "runtime_config_package",
+            default_value="ur_simulation_gz",
+            description='Package with the controller\'s configuration in "config" folder. \
+        Usually the argument is not set, it enables use of a custom setup.',
+        )
+  
+  declare_start_joint_controller_cmd = DeclareLaunchArgument(
+            "start_joint_controller",
+            default_value="true",
+            description="Enable headless mode for robot control",
+        )
+
+  declare_initial_joint_controller_cmd = DeclareLaunchArgument(
+            "initial_joint_controller",
+            default_value="joint_trajectory_controller",
+            description="Robot controller to start.",
+        )
+  
 
 
 ##################################### CONFIGS ##################################### 
-  # NOTE: work on movegroup later
   move_group_configuration = {
         "publish_robot_description_semantic": True,
         "allow_trajectory_execution": LaunchConfiguration("allow_trajectory_execution"),
@@ -229,7 +264,7 @@ def generate_launch_description():
 
 
 ##################################### ACTION ##################################### 
-  
+
 # set vars
   set_env_vars_resources = AppendEnvironmentVariable(
     'GZ_SIM_RESOURCE_PATH',
@@ -237,26 +272,13 @@ def generate_launch_description():
 
 
 # Start Controllers
-  start_arm_controller_cmd = ExecuteProcess(
-    cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-        'arm_controller'],
-        output='screen')
-
-
-  # Launch joint state broadcaster NOTE: default
-  # start_joint_state_broadcaster_cmd = ExecuteProcess(
-  #   cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-  #       'joint_state_broadcaster'],
-  #       output='screen')
   
-  # Launch joint state broadcaster NOTE: from ur
+  # Launch joint state broadcaster 
   start_joint_state_broadcaster_cmd = Node(
       package="controller_manager",
       executable="spawner",
       arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
   )
-
-
 
   start_controller_manager = Node(
       package="controller_manager",
@@ -267,19 +289,25 @@ def generate_launch_description():
       ]
   )
 
-  # TODO: finish this (not even sure if we need this or not)
-  spawn_controllers =  (
-        IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [os.path.join(get_package_share_directory('mycobot_320pi_gz'),'launch'), '/spawn_controllers.launch.py']),
-        )
-    )
+  # initial_joint_controller_spawner_started = Node(
+  #       package="controller_manager",
+  #       executable="spawner",
+  #       arguments=[initial_joint_controller, "-c", "/controller_manager"],
+  #       condition=IfCondition(start_joint_controller),
+  #   )
+  
+  # initial_joint_controller_spawner_stopped = Node(
+  #       package="controller_manager",
+  #       executable="spawner",
+  #       arguments=[initial_joint_controller, "-c", "/controller_manager", "--stopped"],
+  #       condition=UnlessCondition(start_joint_controller),
+  #   )
   
   # Start arm controller
-  start_arm_controller_cmd = ExecuteProcess(
-    cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-        'arm_controller'],
-        output='screen')
+  # start_arm_controller_cmd = ExecuteProcess(
+  #   cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+  #       'arm_controller'],
+  #       output='screen')
   
 
 
@@ -359,16 +387,15 @@ def generate_launch_description():
   )
 
 
+  initial_joint_controller_spawner_started = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[initial_joint_controller, "-c", "/controller_manager"],
+        condition=IfCondition(start_joint_controller),
+    )
+
 
 # delayed load functions
-  # MOVE GROUP NOTE: we probably don't need this
-  # load_move_group_cmd = RegisterEventHandler(
-  #     event_handler=OnProcessExit(
-  #         target_action=start_robot_state_publisher_cmd,
-  #         on_exit=[start_move_group]
-  #     )
-  # )
-
   delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=start_joint_state_broadcaster_cmd,
@@ -377,25 +404,6 @@ def generate_launch_description():
         condition=IfCondition(use_rviz),
     )
 
-  # BROADCASTER
-  load_joint_state_broadcaster_cmd = RegisterEventHandler(
-     event_handler=OnProcessExit(
-     target_action=start_controller_manager ,
-     on_exit=[start_joint_state_broadcaster_cmd],))
-
-  
-  # Launch the arm controller after launching the joint state broadcaster
-  load_arm_controller_cmd = RegisterEventHandler(
-    event_handler=OnProcessExit(
-    target_action=start_joint_state_broadcaster_cmd,
-    on_exit=[start_arm_controller_cmd],))
-
-  load_controller_manager = RegisterEventHandler(
-      event_handler=OnProcessExit(
-          target_action=start_joint_state_broadcaster_cmd,
-          on_exit=[start_controller_manager]
-      )
-  )
   
 
 
@@ -417,32 +425,38 @@ def generate_launch_description():
   ld.add_action(declare_z_cmd)
   ld.add_action(declare_roll_cmd)
   ld.add_action(declare_pitch_cmd)
-  ld.add_action(declare_yaw_cmd) 
-  
-  # NOTE: MOVE GROUP INTEGRATION FOR LATER.
+  ld.add_action(declare_yaw_cmd)
+  # move group
   ld.add_action(declare_debug_cmd)
   ld.add_action(declare_allow_trajectory_execution_cmd)
   ld.add_action(declare_publish_monitored_planning_scene_cmd)
   ld.add_action(declare_capabilities_cmd)
   ld.add_action(declare_disable_capabilities_cmd)
   ld.add_action(declare_monitor_dynamics_cmd)
+  # ur
+  ld.add_action(declare_start_joint_controller_cmd)
+  ld.add_action(declare_initial_joint_controller_cmd)
 
   # Add any actions
   ld.add_action(set_env_vars_resources)
-  ld.add_action(start_gazebo_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
   
   ld.add_action(start_move_group)
-  ld.add_action(start_joint_state_broadcaster_cmd)
-  ld.add_action(delay_rviz_after_joint_state_broadcaster_spawner)
-  ld.add_action(start_gazebo_ros_spawner_cmd)
   ld.add_action(start_controller_manager)
 
+  
+  ld.add_action(start_joint_state_broadcaster_cmd)
+  ld.add_action(delay_rviz_after_joint_state_broadcaster_spawner)
+
+  # ld.add_action(initial_joint_controller_spawner_stopped)
+  # ld.add_action(initial_joint_controller_spawner_started)
+
+  ld.add_action(start_gazebo_ros_spawner_cmd)
 
   # orig: joint_state -> arm_controller 
-  # not working for some reason.
-  # ld.add_action(start_joint_state_broadcaster_cmd)
-  ld.add_action(start_arm_controller_cmd)
+
+  # ld.add_action(start_arm_controller_cmd)
+  ld.add_action(start_gazebo_cmd)
 
 
   return ld
