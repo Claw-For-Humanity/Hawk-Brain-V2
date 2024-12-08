@@ -31,9 +31,12 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name + '/urdf'+'/xacro',glob("urdf/xacro/*")),
-        ('share/' + package_name + '/urdf'+'/mesh',glob("urdf/mesh/*")),
-        ('share/' + package_name + '/urdf'+'/original',glob("urdf/original/*")),
+        ('share/' + package_name + '/obj'+'/xacro',glob("obj/xacro/*")),
+        ('share/' + package_name + '/obj'+'/mesh',glob("obj/mesh/*")),
+        ('share/' + package_name + '/obj'+'/urdf',glob("obj/urdf/*")),
+        ('share/' + package_name + '/rviz' ,glob("rviz/*")),
+        ('share/' + package_name + '/config' ,glob("config/*")),
+        ('share/' + package_name + '/' ,glob(".setup_assistant*")),
 
 
     ],

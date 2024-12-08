@@ -1,16 +1,15 @@
 import os
 from launch import LaunchDescription
 from launch.actions import AppendEnvironmentVariable, DeclareLaunchArgument, IncludeLaunchDescription, RegisterEventHandler, ExecuteProcess
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition, UnlessCondition
 from ament_index_python.packages import get_package_share_directory
 from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, LaunchConfiguration, PythonExpression
+from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution, FindExecutable
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 from moveit_configs_utils.launch_utils import (
-    add_debuggable_node,
     DeclareBooleanLaunchArg,
 )
 import yaml
@@ -18,7 +17,6 @@ import yaml
 
 
 ##################################### LOADING FUNCTIONS #####################################
-# load file
 def load_file(package_name, file_path):
     package_path = get_package_share_directory(package_name)
     absolute_file_path = os.path.join(package_path, file_path)
@@ -29,7 +27,6 @@ def load_file(package_name, file_path):
         # parent of IOError, OSError *and* WindowsError where available.
         return None
 
-# load yaml
 def load_yaml(package_name, file_path):
     package_path = get_package_share_directory(package_name)
     absolute_file_path = os.path.join(package_path, file_path)
@@ -56,18 +53,20 @@ def generate_launch_description():
   
   gazebo_launch_file_path = 'launch' # FIXME: im new
   gazebo_models_path = 'models'
+  controller_config_file_path = 'config/mycobot_320pi_controllers.yaml'
   rviz_config_file_path = 'config/rviz/moveit.rviz'
-  urdf_file_path = 'urdf/xacro/mycobot_320_pi_gz.urdf_v2.xacro'
+  urdf_file_path = 'urdf/original/mycobot_320_pi_moveit_2022_gz.urdf'
+  xacro_file_path = 'urdf/xacro/mycobot_320_pi_gz.urdf_v2.xacro'
   
-
+  
+  default_controller_config_file_path = os.path.join(pkg_share_mycobot, controller_config_file_path)
   default_rviz_config_path = os.path.join(pkg_share_mycobot, rviz_config_file_path) # under mycobot
-  # default_xacro_urdf_model_path = os.path.join(pkg_share_description, xacro_urdf_file_path) # under desc.
-  default_urdf_model_path = os.path.join(pkg_share_description, urdf_file_path)
+  default_urdf_model_path = os.path.join(pkg_share_description, urdf_file_path) # under desc.
+  default_xacro_model_path = os.path.join(pkg_share_description, xacro_file_path)
   gazebo_models_path = os.path.join(pkg_share_mycobot, gazebo_models_path) # [IMPORTANT] gazebo resource path 
   gazebo_launch_file_path = os.path.join(pkg_share_mycobot, gazebo_launch_file_path)   
 
 
-  # rviz params
   robot_description_semantic_config = load_file("mycobot_320pi_gz", "config/firefighter.srdf")
   robot_description_semantic = {"robot_description_semantic": robot_description_semantic_config}
   kinematics_yaml = load_yaml("mycobot_320pi_gz", "config/kinematics.yaml")
@@ -91,7 +90,7 @@ def generate_launch_description():
   # Launch configuration variables specific to simulation
   robot_name = LaunchConfiguration('robot_name')
   rviz_config_file = LaunchConfiguration('rviz_config_file')
-  urdf_model = LaunchConfiguration('urdf_model')
+  xacro_model = LaunchConfiguration('xacro_model')
   use_robot_state_pub = LaunchConfiguration('use_robot_state_pub')
   use_rviz = LaunchConfiguration('use_rviz')
   use_sim_time = LaunchConfiguration('use_sim_time')
@@ -104,11 +103,23 @@ def generate_launch_description():
   pitch = LaunchConfiguration('pitch')
   yaw = LaunchConfiguration('yaw')
 
-  # for movegroup (TODO: implement movegroup later.)
-  # should_publish = LaunchConfiguration("publish_monitored_planning_scene")
-  # monitor_dynamics = LaunchConfiguration("monitor_dynamics")
+  # movegroup
+  should_publish = LaunchConfiguration("publish_monitored_planning_scene")
+  monitor_dynamics = LaunchConfiguration("monitor_dynamics")
+
+  runtime_config_package = LaunchConfiguration("runtime_config_package")
+  controllers_file = LaunchConfiguration("controllers_file")
 
 
+  #this is from UR TODO: figure out what happens here
+  initial_joint_controllers = PathJoinSubstitution(
+        [FindPackageShare(runtime_config_package), "config", controllers_file]
+    )
+  
+  start_joint_controller = LaunchConfiguration("start_joint_controller")
+  initial_joint_controller = LaunchConfiguration("initial_joint_controller")
+
+  description_package = LaunchConfiguration("description_package")
 
 
 ##################################### LAUNCH ARGs ##################################### 
@@ -123,9 +134,9 @@ def generate_launch_description():
     default_value=default_rviz_config_path,
     description='Full path to the RVIZ config file to use')
 
-  declare_urdf_model_path_cmd = DeclareLaunchArgument(
-    name='urdf_model', 
-    default_value=default_urdf_model_path, # NOTE: xacro was here 
+  declare_xacro_model_path_cmd = DeclareLaunchArgument(
+    name='xacro_model', 
+    default_value=default_xacro_model_path, # NOTE: xacro was here 
     description='Absolute path to robot urdf file') 
     
   declare_use_robot_state_pub_cmd = DeclareLaunchArgument(
@@ -178,80 +189,132 @@ def generate_launch_description():
     default_value='0.0',
     description='yaw angle of initial orientation, radians')
   
-  # from here is for launch_move_group NOTE: work on movegroup later.
-  # declare_debug_cmd = DeclareBooleanLaunchArg(
-  #   "debug",
-  #   default_value=False)
+  # for move group
+  declare_debug_cmd = DeclareBooleanLaunchArg(
+    "debug",
+    default_value=False)
   
-  # declare_allow_trajectory_execution_cmd = DeclareBooleanLaunchArg(
-  #   "allow_trajectory_execution",
-  #  default_value=True)
+  declare_allow_trajectory_execution_cmd = DeclareBooleanLaunchArg(
+    "allow_trajectory_execution",
+   default_value=True)
 
-  # declare_publish_monitored_planning_scene_cmd = DeclareBooleanLaunchArg(
-  #     "publish_monitored_planning_scene",
-  #     default_value=True)
+  declare_publish_monitored_planning_scene_cmd = DeclareBooleanLaunchArg(
+      "publish_monitored_planning_scene",
+      default_value=True)
 
-  # declare_capabilities_cmd = DeclareLaunchArgument(
-  #   "capabilities",
-  #   default_value="")
+  declare_capabilities_cmd = DeclareLaunchArgument(
+    "capabilities",
+    default_value="")
 
-  # declare_disable_capabilities_cmd = DeclareLaunchArgument(
-  #   "disable_capabilities",
-  #   default_value="")
+  declare_disable_capabilities_cmd = DeclareLaunchArgument(
+    "disable_capabilities",
+    default_value="")
 
-  # declare_monitor_dynamics_cmd = DeclareBooleanLaunchArg(
-  #   "monitor_dynamics",
-  #   default_value=False)
+  declare_monitor_dynamics_cmd = DeclareBooleanLaunchArg(
+    "monitor_dynamics",
+    default_value=False)
+  
+  #TODO: modify here
+  declare_controller_file_cmd = DeclareLaunchArgument(
+            "controllers_file",
+            default_value="ur_controllers.yaml",
+            description="YAML file with the controllers configuration.",
+        )
+
+  declare_runtime_config_pkg_cmd = DeclareLaunchArgument(
+            "runtime_config_package",
+            default_value="ur_simulation_gz",
+            description='Package with the controller\'s configuration in "config" folder. \
+        Usually the argument is not set, it enables use of a custom setup.',
+        )
+  
+  declare_start_joint_controller_cmd = DeclareLaunchArgument(
+            "start_joint_controller",
+            default_value="true",
+            description="Enable headless mode for robot control",
+        )
+
+  declare_initial_joint_controller_cmd = DeclareLaunchArgument(
+            "initial_joint_controller",
+            default_value="joint_trajectory_controller",
+            description="Robot controller to start.",
+        )
+  
 
 
 ##################################### CONFIGS ##################################### 
-  # NOTE: work on movegroup later
-  # move_group_configuration = {
-  #       "publish_robot_description_semantic": True,
-  #       "allow_trajectory_execution": LaunchConfiguration("allow_trajectory_execution"),
-  #       # Note: Wrapping the following values is necessary so that the parameter value can be the empty string
-  #       "capabilities": ParameterValue(
-  #           LaunchConfiguration("capabilities"), value_type=str
-  #       ),
-  #       "disable_capabilities": ParameterValue(
-  #           LaunchConfiguration("disable_capabilities"), value_type=str
-  #       ),
-  #       # Publish the planning scene of the physical robot so that rviz plugin can know actual robot
-  #       "publish_planning_scene": should_publish,
-  #       "publish_geometry_updates": should_publish,
-  #       "publish_state_updates": should_publish,
-  #       "publish_transforms_updates": should_publish,
-  #       "monitor_dynamics": monitor_dynamics, # (if) FIXME: set this to False
-  #       "use_sim_time": use_sim_time,
-  #   }
+  move_group_configuration = {
+        "publish_robot_description_semantic": True,
+        "allow_trajectory_execution": LaunchConfiguration("allow_trajectory_execution"),
+        # Note: Wrapping the following values is necessary so that the parameter value can be the empty string
+        "capabilities": ParameterValue(
+            LaunchConfiguration("capabilities"), value_type=str
+        ),
+        "disable_capabilities": ParameterValue(
+            LaunchConfiguration("disable_capabilities"), value_type=str
+        ),
+        # Publish the planning scene of the physical robot so that rviz plugin can know actual robot
+        "publish_planning_scene": should_publish,
+        "publish_geometry_updates": should_publish,
+        "publish_state_updates": should_publish,
+        "publish_transforms_updates": should_publish,
+        "monitor_dynamics": monitor_dynamics, # (if) FIXME: set this to False
+        "use_sim_time": use_sim_time,
+    }
 
 
 ##################################### ACTION ##################################### 
-  # Specify the actions
+
+# set vars
   set_env_vars_resources = AppendEnvironmentVariable(
     'GZ_SIM_RESOURCE_PATH',
     gazebo_models_path)
 
+
+# Start Controllers
+  
+  # Launch joint state broadcaster 
+  start_joint_state_broadcaster_cmd = Node(
+      package="controller_manager",
+      executable="spawner",
+      arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+  )
+
+  start_controller_manager = Node(
+      package="controller_manager",
+      executable="ros2_control_node",
+      parameters=[
+          default_urdf_model_path,
+          default_controller_config_file_path
+      ]
+  )
+
+  # initial_joint_controller_spawner_started = Node(
+  #       package="controller_manager",
+  #       executable="spawner",
+  #       arguments=[initial_joint_controller, "-c", "/controller_manager"],
+  #       condition=IfCondition(start_joint_controller),
+  #   )
+  
+  # initial_joint_controller_spawner_stopped = Node(
+  #       package="controller_manager",
+  #       executable="spawner",
+  #       arguments=[initial_joint_controller, "-c", "/controller_manager", "--stopped"],
+  #       condition=UnlessCondition(start_joint_controller),
+  #   )
+  
   # Start arm controller
-  start_arm_controller_cmd = ExecuteProcess(
-    cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-        'arm_controller'],
-        output='screen')
+  # start_arm_controller_cmd = ExecuteProcess(
+  #   cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+  #       'arm_controller'],
+  #       output='screen')
+  
 
-  # Start Gazebo environment
-  start_gazebo_cmd = IncludeLaunchDescription(
-    PythonLaunchDescriptionSource(
-      os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')),
-    launch_arguments=[('gz_args', [' -r -v4 ', 'empty.sdf'])])
 
-  # Launch joint state broadcaster
-  start_joint_state_broadcaster_cmd = ExecuteProcess(
-    cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-        'joint_state_broadcaster'],
-        output='screen')
 
-  # define robot desc.
-  robot_description_content = ParameterValue(Command(['xacro ', urdf_model]), value_type=str)
+# commands
+  # STATE PUBLISHER
+  robot_description_content = ParameterValue(Command(['xacro ', xacro_model]), value_type=str)
   robot_description = {'robot_description': robot_description_content}
   #  Subscribe to the joint states of the robot, and publish the 3D pose of each link.
   start_robot_state_publisher_cmd = Node(
@@ -264,7 +327,7 @@ def generate_launch_description():
       'use_sim_time': use_sim_time, 
       'robot_description': robot_description_content}])
 
-  # start rviz
+  # RVIZ
   sim_time = {'use_sim_time': use_sim_time}
   start_rviz_cmd = Node(
     condition=IfCondition(use_rviz),
@@ -280,9 +343,15 @@ def generate_launch_description():
       sim_time,
       planning_pipelines # or planning_pipelines      
       ] 
-    )  
+    )
+  
+  # GAZEBO
+  start_gazebo_cmd = IncludeLaunchDescription(
+    PythonLaunchDescriptionSource(
+      os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')),
+    launch_arguments=[('gz_args', [' -r -v4 ', 'empty.sdf'])])
     
-  # Spawn the robot (NOTE: deleted '-string', robot_description_content)
+  # GZ SPAWNER (NOTE: deleted '-string', robot_description_content)
   start_gazebo_ros_spawner_cmd = Node(
     package='ros_gz_sim',
     executable='create',
@@ -298,62 +367,46 @@ def generate_launch_description():
       ],
     output='screen')
   
-  # Launch the joint state broadcaster after spawning the robot
-  load_joint_state_broadcaster_cmd = RegisterEventHandler(
-     event_handler=OnProcessExit(
-     target_action=start_gazebo_ros_spawner_cmd ,
-     on_exit=[start_joint_state_broadcaster_cmd],))
+  # MOVE GROUP
+  start_move_group = Node(
+      package="moveit_ros_move_group",
+      executable="move_group",
+      # commands_file=str(moveit_config.package_path / "launch" / "gdb_settings.gdb"), # im not sure if this exists in our package
+      output="screen",
+      parameters=[
+        robot_description, # originally. moveit_config.to_dict()
+        robot_description_semantic,
+        robot_description_kinematics,
+        ompl_planning_yaml,
+        sim_time,
+        move_group_configuration 
+        ],
+      # extra_debug_args=["--debug"],
+      # Set the display variable, in case OpenGL code is used internally
+      # additional_env={"DISPLAY": ":0"}
+  )
 
-  # Launch the arm controller after launching the joint state broadcaster
-  load_arm_controller_cmd = RegisterEventHandler(
-    event_handler=OnProcessExit(
-    target_action=start_joint_state_broadcaster_cmd,
-    on_exit=[start_arm_controller_cmd],))
 
-  # Start arm controller
-  start_arm_controller_cmd = ExecuteProcess(
-    cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-        'arm_controller'],
-        output='screen')
-
-  
-  # TODO: finish this (not even sure if we need this or not)
-  spawn_controllers =  (
-        IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [os.path.join(get_package_share_directory('mycobot_320pi_gz'),'launch'), '/spawn_controllers.launch.py']),
-        )
+  initial_joint_controller_spawner_started = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[initial_joint_controller, "-c", "/controller_manager"],
+        condition=IfCondition(start_joint_controller),
     )
 
-  # NOTE: later thing
-  # start_move_group = Node(
-  #     package="moveit_ros_move_group",
-  #     executable="move_group",
-  #     # commands_file=str(moveit_config.package_path / "launch" / "gdb_settings.gdb"), # im not sure if this exists in our package
-  #     output="screen",
-  #     parameters=[
-  #       robot_description, # originally. moveit_config.to_dict()
-  #       robot_description_semantic,
-  #       robot_description_kinematics,
-  #       ompl_planning_yaml,
-  #       sim_time,
-  #       move_group_configuration 
-  #       ],
-  #     # extra_debug_args=["--debug"],
-  #     # Set the display variable, in case OpenGL code is used internally
-  #     # additional_env={"DISPLAY": ":0"}
-  # )
 
-
+# delayed load functions
+  delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=start_joint_state_broadcaster_cmd,
+            on_exit=[start_rviz_cmd],
+        ),
+        condition=IfCondition(use_rviz),
+    )
 
   
-  # NOTE: LATERRRR
-  # load_move_group_cmd = RegisterEventHandler(
-  #     event_handler=OnProcessExit(
-  #         target_action=start_move_group,
-  #         on_exit=[start_rviz_cmd]
-  #     )
-  # )
+
+
 
   # Create the launch description and populate
   ld = LaunchDescription()
@@ -361,7 +414,7 @@ def generate_launch_description():
   # Declare the launch options
   ld.add_action(declare_robot_name_cmd)
   ld.add_action(declare_rviz_config_file_cmd)
-  ld.add_action(declare_urdf_model_path_cmd)
+  ld.add_action(declare_xacro_model_path_cmd)
   ld.add_action(declare_use_robot_state_pub_cmd)  
   ld.add_action(declare_use_rviz_cmd) 
   ld.add_action(declare_use_sim_time_cmd)
@@ -372,28 +425,38 @@ def generate_launch_description():
   ld.add_action(declare_z_cmd)
   ld.add_action(declare_roll_cmd)
   ld.add_action(declare_pitch_cmd)
-  ld.add_action(declare_yaw_cmd) 
-  
-  # NOTE: MOVE GROUP INTEGRATION FOR LATER.
-  # ld.add_action(declare_debug_cmd)
-  # ld.add_action(declare_allow_trajectory_execution_cmd)
-  # ld.add_action(declare_publish_monitored_planning_scene_cmd)
-  # ld.add_action(declare_capabilities_cmd)
-  # ld.add_action(declare_disable_capabilities_cmd)
-  # ld.add_action(declare_monitor_dynamics_cmd)
+  ld.add_action(declare_yaw_cmd)
+  # move group
+  ld.add_action(declare_debug_cmd)
+  ld.add_action(declare_allow_trajectory_execution_cmd)
+  ld.add_action(declare_publish_monitored_planning_scene_cmd)
+  ld.add_action(declare_capabilities_cmd)
+  ld.add_action(declare_disable_capabilities_cmd)
+  ld.add_action(declare_monitor_dynamics_cmd)
+  # ur
+  ld.add_action(declare_start_joint_controller_cmd)
+  ld.add_action(declare_initial_joint_controller_cmd)
 
   # Add any actions
   ld.add_action(set_env_vars_resources)
-  ld.add_action(start_gazebo_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
   
-  ld.add_action(start_rviz_cmd)
+  ld.add_action(start_move_group)
+  ld.add_action(start_controller_manager)
+
   
+  ld.add_action(start_joint_state_broadcaster_cmd)
+  ld.add_action(delay_rviz_after_joint_state_broadcaster_spawner)
+
+  # ld.add_action(initial_joint_controller_spawner_stopped)
+  # ld.add_action(initial_joint_controller_spawner_started)
+
   ld.add_action(start_gazebo_ros_spawner_cmd)
-  
+
   # orig: joint_state -> arm_controller 
-  ld.add_action(load_joint_state_broadcaster_cmd)
-  ld.add_action(load_arm_controller_cmd)
+
+  # ld.add_action(start_arm_controller_cmd)
+  ld.add_action(start_gazebo_cmd)
 
 
   return ld
