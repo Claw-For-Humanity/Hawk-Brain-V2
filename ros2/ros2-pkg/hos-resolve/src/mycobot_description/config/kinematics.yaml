@@ -3,13 +3,14 @@ manipulator:
   kinematics_solver_search_resolution: 0.0050000000000000001
   kinematics_solver_timeout: 0.0050000000000000001
   joint_names:
-    - joint_1
-    - joint_2
-    - joint_3
-    - joint_4
-    - joint_5
-    - joint_6
+    - joint2_to_joint1
+    - joint3_to_joint2
+    - joint4_to_joint3
+    - joint5_to_joint4
+    - joint6_to_joint5
+    - joint6output_to_joint6
   link_names:
+    - base
     - link_1
     - link_2
     - link_3

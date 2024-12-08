@@ -8,14 +8,17 @@ from moveit_configs_utils import MoveItConfigsBuilder
 
 def generate_launch_description():
     moveit_config = (
-        MoveItConfigsBuilder("moiro_arm", package_name="moiro_arm_moveit_config")
-        .robot_description(file_path="config/moiro_arm.urdf.xacro")
-        .robot_description_semantic(file_path="config/moiro_arm.srdf")
+        MoveItConfigsBuilder("mycobot", package_name="mycobot_description")
+        .robot_description(file_path="config/mycobot.urdf.xacro")
+        .robot_description_semantic(file_path="config/mycobot.srdf")
         .trajectory_execution(file_path="config/moveit_controllers.yaml")
         # only use ompl for planning
         .planning_pipelines(pipelines=["ompl"])
         .to_moveit_configs()
     )
+
+    print(f'\ngenerated config is {moveit_config}\n')
+
     # Start the actual move_group node/action server
     run_move_group_node = Node(
         package="moveit_ros_move_group",
@@ -28,7 +31,7 @@ def generate_launch_description():
 
     # RViz
     rviz_config_file = (
-        get_package_share_directory("moiro_arm_move_group") + "/launch/default_move_group.rviz"
+        get_package_share_directory("mycobot_description") + "/config/default_move_group.rviz"
     )
     rviz_node = Node(
         package="rviz2",
@@ -66,7 +69,7 @@ def generate_launch_description():
 
     # ros2_control using FakeSystem as hardware
     ros2_controllers_path = os.path.join(
-        get_package_share_directory("moiro_arm_moveit_config"),
+        get_package_share_directory("mycobot_description"),
         "config",
         "ros2_controllers.yaml",
     )
@@ -89,7 +92,7 @@ def generate_launch_description():
     # Load controllers
     load_controllers = []
     for controller in [
-        "moiro_arm_controller",
+        "manipulator_controller",
         "joint_state_broadcaster",
     ]:
         load_controllers += [
