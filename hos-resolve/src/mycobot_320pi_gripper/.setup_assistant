@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: mycobot_description
+    relative_path: obj/urdf/new_mycobot_pro_320_pi_2022_moveit_gripper.urdf
+  srdf:
+    relative_path: config/mycobot_320pi_gripper.srdf
+  package_settings:
+    author_name: Eric Changbean Kang
+    author_email: ceo.ekang@clawforhumanity.ca
+    generated_timestamp: 1734731922
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

@@ -36,6 +36,7 @@ setup(
         ('share/' + package_name + '/obj'+'/urdf',glob("obj/urdf/*")),
         ('share/' + package_name + '/rviz' ,glob("rviz/*")),
         ('share/' + package_name + '/config' ,glob("config/*")),
+        ('share/' + package_name + '/config_gripper' ,glob("config_gripper/*")),
         ('share/' + package_name + '/' ,glob(".setup_assistant*")),
 
 
