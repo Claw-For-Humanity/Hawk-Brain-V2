@@ -9,7 +9,7 @@ from moveit_configs_utils import MoveItConfigsBuilder
 def generate_launch_description():
     moveit_config = (
         MoveItConfigsBuilder("mycobot_320pi_gripper", package_name="mycobot_description")
-        .robot_description(file_path="config_gripper/mycobot.urdf.xacro")
+        .robot_description(file_path="config_gripper/mycobot_320pi_gripper.urdf.xacro")
         .robot_description_semantic(file_path="config_gripper/mycobot_320pi_gripper.srdf")
         .trajectory_execution(file_path="config_gripper/moveit_controllers.yaml")
         # only use ompl for planning

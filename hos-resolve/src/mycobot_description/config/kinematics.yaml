@@ -1,7 +1,7 @@
 manipulator:
   kinematics_solver: kdl_kinematics_plugin/KDLKinematicsPlugin
-  kinematics_solver_search_resolution: 0.0050000000000000001
-  kinematics_solver_timeout: 0.0050000000000000001
+  kinematics_solver_search_resolution: 0.0500000000000000001
+  kinematics_solver_timeout: 0.0500000000000000001
   joint_names:
     - joint2_to_joint1
     - joint3_to_joint2
