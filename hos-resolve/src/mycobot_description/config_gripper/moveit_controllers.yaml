@@ -18,6 +18,9 @@ moveit_simple_controller_manager:
       - joint5_to_joint4
       - joint6_to_joint5
       - joint6output_to_joint6
+      # - gripper_controller
+
+
   gripper_manipulator_controller:
     type: FollowJointTrajectory
     action_ns: follow_joint_trajectory

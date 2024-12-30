@@ -8,7 +8,7 @@ from moveit_configs_utils import MoveItConfigsBuilder
 
 def generate_launch_description():
     moveit_config = (
-        MoveItConfigsBuilder("mycobot_320pi_gripper", package_name="mycobot_description")
+        MoveItConfigsBuilder("mycobot", package_name="mycobot_description")
         .robot_description(file_path="config_gripper/mycobot_320pi_gripper.urdf.xacro")
         .robot_description_semantic(file_path="config_gripper/mycobot_320pi_gripper.srdf")
         .trajectory_execution(file_path="config_gripper/moveit_controllers.yaml")
@@ -16,8 +16,6 @@ def generate_launch_description():
         .planning_pipelines(pipelines=["ompl"])
         .to_moveit_configs()
     )
-
-    print(f'\ngenerated config is {moveit_config}\n')
 
     # Start the actual move_group node/action server
     run_move_group_node = Node(
@@ -70,7 +68,7 @@ def generate_launch_description():
     # ros2_control using FakeSystem as hardware
     ros2_controllers_path = os.path.join(
         get_package_share_directory("mycobot_description"),
-        "config",
+        "config_gripper",
         "ros2_controllers.yaml",
     )
     ros2_control_node = Node(
@@ -93,6 +91,7 @@ def generate_launch_description():
     load_controllers = []
     for controller in [
         "manipulator_controller",
+        "gripper_manipulator_controller",
         "joint_state_broadcaster",
     ]:
         load_controllers += [

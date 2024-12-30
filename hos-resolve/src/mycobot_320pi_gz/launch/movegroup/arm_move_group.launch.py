@@ -17,7 +17,6 @@ def generate_launch_description():
         .to_moveit_configs()
     )
 
-    print(f'\ngenerated config is {moveit_config}\n')
 
     # Start the actual move_group node/action server
     run_move_group_node = Node(
